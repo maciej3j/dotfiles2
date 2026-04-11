@@ -1,4 +1,3 @@
--- Wczytaj to np. w init.lua: require('config.lsp')
 vim.lsp.config("lua_ls", {
   settings = {
     Lua = {
@@ -13,16 +12,6 @@ vim.lsp.config("lua_ls", {
   },
 })
 
-vim.lsp.config("rust_analyzer", {
-  settings = {
-    ["rust-analyzer"] = {
-      checkOnSave = { command = "clippy" },
-      cargo = { allFeatures = true },
-    },
-  },
-})
-
--- Diagnostics (ładne i czytelne)
 vim.diagnostic.config({
   severity_sort = true,
   update_in_insert = false,
@@ -50,21 +39,15 @@ vim.api.nvim_create_autocmd("LspAttach", {
     local map = function(mode, lhs, rhs, desc)
       vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc, silent = true })
     end
-
-    -- Najczęściej używane z leaderem
-    map("n", "<leader>gd", vim.lsp.buf.definition,      "Go to definition")
-    map("n", "<leader>gD", vim.lsp.buf.declaration,     "Go to declaration")
-    map("n", "<leader>gi", vim.lsp.buf.implementation,  "Go to implementation")
-    map("n", "<leader>gr", vim.lsp.buf.references,      "References")
-    map("n", "<leader>rn", vim.lsp.buf.rename,          "Rename")
-    map({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, "Code action")
-
-    -- Hover i inne przydatne
-    map("n", "K", vim.lsp.buf.hover, "Hover documentation")
-    map("n", "<leader>ds", vim.lsp.buf.document_symbol, "Document symbols")
-
-    -- Formatowanie
-    map("n", "<leader>f", function()
+    --
+    -- -- map({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, "Code action")
+    --
+    -- -- Hover i inne przydatne
+    -- map("n", "K", vim.lsp.buf.hover, "Hover documentation")
+    -- map("n", "<leader>ds", vim.lsp.buf.document_symbol, "Document symbols")
+    --
+    -- -- Formatowanie
+    map("n", "<leader>cf", function()
       vim.lsp.buf.format({ async = true })
     end, "Format buffer")
   end,
