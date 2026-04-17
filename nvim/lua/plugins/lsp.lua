@@ -41,25 +41,4 @@ return {
       automatic_enable = true,
     },
   },
-
-  {
-    "WhoIsSethDaniel/mason-tool-installer.nvim",
-    dependencies = { "mason-org/mason.nvim" },
-    opts = {
-      ensure_installed = {
-        -- LSP-y
-        "lua_ls",
-        "rust_analyzer",
-        "pyright",
-        "ts_ls",
-        "gopls",
-        "jsonls",
-
-        -- Formattery / dodatkowe narzędzia
-        "stylua",
-        "prettier",
-        "goimports",
-      },
-    },
-  },
 }

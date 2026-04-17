@@ -1,2 +1,2 @@
-vim.keymap.set("n", "<leader>e", function() Snacks.explorer() end, { desc = "Open/Close Explorer" })
-vim.keymap.set("n", "<leader>E", function() Snacks.explorer.reveal() end, { desc = "Reveal File in Explorer" })
+-- vim.keymap.set("n", "<leader>e", function() Snacks.explorer() end, { desc = "Open/Close Explorer" })
+-- vim.keymap.set("n", "<leader>E", function() Snacks.explorer.reveal() end, { desc = "Reveal File in Explorer" })

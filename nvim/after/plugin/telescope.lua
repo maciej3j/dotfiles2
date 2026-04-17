@@ -6,9 +6,3 @@ vim.keymap.set("n", "<leader>sG", function()
 end, { desc = "Telescope grep string" })
 vim.keymap.set("n", "<C-p>", builtin.git_files, { desc = "Telescope git files" })
 vim.keymap.set("n", "<leader>sb", builtin.buffers, { desc = "Telescope buffers" })
-
--- telescope projects
-require("telescope").load_extension("project")
-vim.keymap.set("n", "<leader>pp", function()
-	require("telescope").extensions.project.project({})
-end, { desc = "Projects" })
