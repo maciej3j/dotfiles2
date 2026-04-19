@@ -1,0 +1,40 @@
+-- vim.opt.guicursor = ""
+
+vim.opt.nu = true -- line numbers
+vim.opt.relativenumber = true
+
+vim.opt.tabstop = 3
+vim.opt.softtabstop = 3
+vim.opt.shiftwidth = 3
+vim.opt.expandtab = true
+
+vim.opt.smartindent = true
+
+vim.opt.wrap = false
+
+vim.opt.swapfile = true
+vim.opt.backup = true
+vim.opt.backupdir = os.getenv("HOME") .. "/.vim/backup//"
+vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
+
+vim.opt.hlsearch = false
+vim.opt.incsearch = true
+
+vim.opt.termguicolors = true
+
+vim.opt.scrolloff = 8
+vim.opt.signcolumn = "yes"
+vim.opt.isfname:append("@-@")
+
+vim.opt.updatetime = 50
+
+vim.opt.colorcolumn = "80"
+vim.opt.showmode = false
+vim.opt.autoread = true -- auto-reload changes if outside of neovim
+vim.opt.clipboard:append("unnamedplus")
+
+vim.opt.fillchars = { eob = " " }
+
+-- vim.keymap.set("n", "K", function()
+--   vim.lsp.buf.hover({ border = "rounded"})
+-- end)
