@@ -39,14 +39,14 @@ vim.api.nvim_create_autocmd("LspAttach", {
     local map = function(mode, lhs, rhs, desc)
       vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc, silent = true })
     end
-    --
-    -- -- map({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, "Code action")
-    --
-    -- -- Hover i inne przydatne
-    -- map("n", "K", vim.lsp.buf.hover, "Hover documentation")
-    -- map("n", "<leader>ds", vim.lsp.buf.document_symbol, "Document symbols")
-    --
-    -- -- Formatowanie
+
+    map({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, "Code action")
+
+    -- Hover i inne przydatne
+    map("n", "K", vim.lsp.buf.hover, "Hover documentation")
+    map("n", "<leader>cs", vim.lsp.buf.document_symbol, "Document symbols")
+
+    -- Formatowanie
     map("n", "<leader>cf", function()
       vim.lsp.buf.format({ async = true })
     end, "Format buffer")

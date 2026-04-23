@@ -1,12 +1,12 @@
 return {
   {
     "saghen/blink.cmp",
-    version = "1.*",
+    version = "*",
     dependencies = {
       "rafamadriz/friendly-snippets",
     },
     opts = {
-      keymap = { preset = "default" },   -- "super-tab"?
+      keymap = { preset = "super-tab" },   -- "super-tab"?
 
       appearance = {
         use_nvim_cmp_as_default = true,
@@ -19,6 +19,26 @@ return {
 
       fuzzy = { implementation = "prefer_rust_with_warning" },
       snippets = { preset = "default" },
+    },
+    completion = {
+      accept = {
+        -- experimental auto-brackets support
+        auto_brackets = {
+          enabled = true,
+        },
+      },
+      menu = {
+        draw = {
+          treesitter = { "lsp" },
+        },
+      },
+      documentation = {
+        auto_show = true,
+        auto_show_delay_ms = 200,
+      },
+      ghost_text = {
+        enabled = vim.g.ai_cmp,
+      },
     },
   },
 
