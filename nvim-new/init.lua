@@ -1,3 +1,50 @@
+require('vim._core.ui2').enable({
+   enable = true,
+   msg = {
+      targets = {
+         [''] = 'msg',
+         empty = 'cmd',
+         bufwrite = 'msg',
+         confirm = 'cmd',
+         emsg = 'pager',
+         echo = 'msg',
+         echomsg = 'msg',
+         echoerr = 'pager',
+         completion = 'cmd',
+         list_cmd = 'pager',
+         lua_error = 'pager',
+         lua_print = 'msg',
+         progress = 'pager',
+         rpc_error = 'pager',
+         quickfix = 'msg',
+         search_cmd = 'cmd',
+         search_count = 'cmd',
+         shell_cmd = 'pager',
+         shell_err = 'pager',
+         shell_out = 'pager',
+         shell_ret = 'msg',
+         undo = 'msg',
+         verbose = 'pager',
+         wildlist = 'cmd',
+         wmsg = 'msg',
+         typed_cmd = 'cmd',
+      },
+      cmd = {
+         height = 0.5,
+      },
+      dialog = {
+         height = 0.5,
+      },
+      msg = {
+         height = 0.3,
+         timeout = 5000,
+      },
+      pager = {
+         height = 0.5,
+      },
+   },
+})
+
 vim.opt.termguicolors = true
 
 
@@ -51,7 +98,7 @@ vim.opt.incsearch = true      -- show matches as you type
 vim.opt.showmatch = true                          -- highlights matching brackets
 vim.opt.cmdheight = 1                             -- single line command line
 vim.opt.completeopt = "menuone,noinsert,noselect" -- completion options
--- vim.opt.showmode = false -- do not show the mode, instead have it in statusline
+vim.opt.showmode = false -- do not show the mode, instead have it in statusline
 vim.opt.pumheight = 10                            -- popup menu height
 vim.opt.pumblend = 10                             -- popup menu transparency
 vim.opt.winblend = 0                              -- floating window transparency
@@ -102,7 +149,8 @@ vim.opt.splitbelow = true                            -- horizontal splits go bel
 vim.opt.splitright = true                            -- vertical splits go right
 
 vim.opt.wildmenu = true                              -- tab completion
-vim.opt.wildmode = "longest:full,full"               -- complete longest common match, full completion list, cycle through with Tab
+vim.opt.wildmode =
+"longest:full,full"                                  -- complete longest common match, full completion list, cycle through with Tab
 vim.opt.diffopt:append("linematch:60")               -- improve diff display
 vim.opt.redrawtime = 10000                           -- increase neovim redraw tolerance
 vim.opt.maxmempattern = 20000                        -- increase max memory
@@ -214,10 +262,12 @@ vim.api.nvim_create_autocmd("FileType", {
 -- PLUGINS (vim.pack)
 -- ============================================================================
 vim.pack.add({
+   "https://github.com/windwp/nvim-autopairs",
    "https://www.github.com/lewis6991/gitsigns.nvim",
+   "https://github.com/akinsho/bufferline.nvim",
+   "https://github.com/nvim-lualine/lualine.nvim",
    "https://www.github.com/echasnovski/mini.nvim",
    "https://www.github.com/ibhagwan/fzf-lua",
-   "https://www.github.com/nvim-tree/nvim-tree.lua",
    {
       src = "https://github.com/nvim-treesitter/nvim-treesitter",
       branch = "main",
@@ -226,15 +276,24 @@ vim.pack.add({
    -- Language Server Protocols
    "https://www.github.com/neovim/nvim-lspconfig",
    "https://github.com/mason-org/mason.nvim",
+   "https://github.com/saghen/blink.lib",
    {
       src = "https://github.com/saghen/blink.cmp",
-      version = vim.version.range("1.*"),
+      build = function()
+         require('blink.cmp').build():wait(60000)
+      end,
    },
    "https://github.com/L3MON4D3/LuaSnip",
    "https://github.com/tiagovla/tokyodark.nvim",
    "https://github.com/nvim-tree/nvim-web-devicons",
    "https://github.com/folke/snacks.nvim",
+   "https://github.com/ellisonleao/gruvbox.nvim",
    "https://github.com/folke/which-key.nvim",
+   "https://github.com/folke/flash.nvim",
+   {
+      src = 'https://github.com/mrcjkb/rustaceanvim',
+      version = vim.version.range('^9')
+   },
 })
 
 local function packadd(name)
@@ -245,7 +304,6 @@ packadd("gitsigns.nvim")
 packadd("mini.nvim")
 packadd("nvim-web-devicons")
 packadd("fzf-lua")
-packadd("nvim-tree.lua")
 -- LSP
 packadd("nvim-lspconfig")
 packadd("mason.nvim")
@@ -253,6 +311,9 @@ packadd("blink.cmp")
 packadd("snacks.nvim")
 packadd("which-key.nvim")
 packadd("LuaSnip")
+packadd("flash.nvim")
+packadd("bufferline.nvim")
+packadd("gruvbox.nvim")
 
 -- ============================================================================
 -- PLUGIN CONFIGS
@@ -309,20 +370,12 @@ end
 
 setup_treesitter()
 
-require("nvim-tree").setup({
-   view = {
-      width = 35,
-   },
-   filters = {
-      dotfiles = false,
-   },
-   renderer = {
-      group_empty = true,
-   },
-})
 vim.keymap.set("n", "<leader>e", function()
-   require("nvim-tree.api").tree.toggle()
-end, { desc = "Toggle NvimTree" })
+   require("snacks").explorer.open()
+end, { desc = "Explorer" })
+vim.keymap.set("n", "<leader>E", function()
+   require("snacks").explorer.reveal()
+end, { desc = "Explorer Open" })
 
 vim.api.nvim_set_hl(0, "NvimTreeNormalNC", { bg = "none" })
 vim.api.nvim_set_hl(0, "SignColumn", { bg = "none" })
@@ -334,31 +387,30 @@ vim.api.nvim_set_hl(0, "NvimTreeEndOfBuffer", { bg = "none" })
 require("fzf-lua").setup({})
 
 vim.keymap.set("n", "<leader>ff", function()
-   require("fzf-lua").files()
-end, { desc = "FZF Files" })
+   require("snacks").picker.files()
+end, { desc = "Find File" })
 vim.keymap.set("n", "<leader>fg", function()
-   require("fzf-lua").live_grep()
-end, { desc = "FZF Live Grep" })
+   require("snacks").picker.grep()
+end, { desc = "Live Grep" })
 vim.keymap.set("n", "<leader>fb", function()
-   require("fzf-lua").buffers()
-end, { desc = "FZF Buffers" })
+   require("snacks").picker.buffers()
+end, { desc = "Buffers" })
 vim.keymap.set("n", "<leader>fh", function()
-   require("fzf-lua").help_tags()
-end, { desc = "FZF Help Tags" })
+   require("snacks").picker.tags()
+end, { desc = "Help" })
 vim.keymap.set("n", "<leader>fx", function()
-   require("fzf-lua").diagnostics_document()
-end, { desc = "FZF Diagnostics Document" })
+   require("snacks").picker.diagnostics_buffer()
+end, { desc = "Diagnostics buffer" })
 vim.keymap.set("n", "<leader>fX", function()
-   require("fzf-lua").diagnostics_workspace()
-end, { desc = "FZF Diagnostics Workspace" })
+   require("snacks").picker.diagnostics()
+end, { desc = "Diagnostics Workspace" })
 
 require("mini.ai").setup({})
 require("mini.comment").setup({})
 require("mini.move").setup({})
-require("mini.surround").setup({})
+-- require("mini.surround").setup({})
 require("mini.cursorword").setup({})
 require("mini.indentscope").setup({})
-require("mini.pairs").setup({})
 require("mini.trailspace").setup({})
 require("mini.bufremove").setup({})
 require("mini.notify").setup({})
@@ -366,12 +418,12 @@ require("mini.icons").setup({})
 
 require("gitsigns").setup({
    signs = {
-      add = { text = "\u{2590}" },      -- ▏
-      change = { text = "\u{2590}" },   -- ▐
-      delete = { text = "\u{2590}" },   -- ◦
-      topdelete = { text = "\u{25e6}" }, -- ◦
+      add = { text = "\u{2590}" },          -- ▏
+      change = { text = "\u{2590}" },       -- ▐
+      delete = { text = "\u{2590}" },       -- ◦
+      topdelete = { text = "\u{25e6}" },    -- ◦
       changedelete = { text = "\u{25cf}" }, -- ●
-      untracked = { text = "\u{25cb}" }, -- ○
+      untracked = { text = "\u{25cb}" },    -- ○
    },
    signcolumn = true,
    current_line_blame = false,
@@ -450,9 +502,8 @@ local function map(key, fn, desc)
    vim.keymap.set("n", key, fn, { noremap = true, silent = true, desc = desc })
 end
 
-map("<leader>gd", function() require("fzf-lua").lsp_definitions({ jump_to_single_result = true }) end,
-   "Go to definition (fzf)")
-map("<leader>gD", vim.lsp.buf.definition, "Go to definition")
+map("<leader>gd", function() require("snacks").picker.lsp_definitions() end,
+   "Go to definition")
 map("<leader>gS", function()
    vim.cmd("vsplit"); vim.lsp.buf.definition()
 end, "Go to definition (split)")
@@ -463,15 +514,12 @@ map("<leader>d", function() vim.diagnostic.open_float({ scope = "cursor" }) end,
 map("<leader>nd", function() vim.diagnostic.jump({ count = 1 }) end, "Next diagnostic")
 map("<leader>pd", function() vim.diagnostic.jump({ count = -1 }) end, "Prev diagnostic")
 map("K", vim.lsp.buf.hover, "Hover docs")
-map("<leader>fd", function() require("fzf-lua").lsp_definitions({ jump_to_single_result = true }) end,
-   "LSP definitions")
-map("<leader>fr", function() require("fzf-lua").lsp_references() end, "LSP references")
-map("<leader>ft", function() require("fzf-lua").lsp_typedefs() end, "LSP type defs")
-map("<leader>fs", function() require("fzf-lua").lsp_document_symbols() end, "LSP document symbols")
-map("<leader>fw", function() require("fzf-lua").lsp_workspace_symbols() end, "LSP workspace symbols")
-map("<leader>fi", function() require("fzf-lua").lsp_implementations() end, "LSP implementations")
+map("<leader>fr", function() require("snacks").picker.lsp_references() end, "LSP references")
+map("<leader>ft", function() require("snacks").picker.lsp_typedefinitions() end, "LSP type defs")
+map("<leader>fs", function() require("snacks").picker.lsp_symbols() end, "LSP document symbols")
+map("<leader>fi", function() require("snacks").picker.lsp_implementations() end, "LSP implementations")
 
-map("<leader>oi", function()
+map("<leader>cf", function()
    vim.lsp.buf.code_action({
       context = { only = { "source.organizeImports" }, diagnostics = {} },
       apply = true,
@@ -489,6 +537,7 @@ end, { desc = "Open diagnostic list" })
 vim.keymap.set("n", "<leader>dl", vim.diagnostic.open_float, { desc = "Show line diagnostics" })
 
 require("blink.cmp").setup({
+   fuzzy = { implementation = "lua" },
    keymap = {
       preset = "none",
       ["<C-Space>"] = { "show", "hide" },
@@ -505,11 +554,6 @@ require("blink.cmp").setup({
       expand = function(snippet)
          require("luasnip").lsp_expand(snippet)
       end,
-   },
-
-   fuzzy = {
-      implementation = "prefer_rust",
-      prebuilt_binaries = { download = true },
    },
 })
 
@@ -540,13 +584,14 @@ vim.lsp.enable({
    "ts_ls",
    "gopls",
    "clangd",
-   "rust-analyzer",
+   -- "rust_analyzer",
 })
 
 -- SNACKS
 require("snacks").setup({
    bigfile = { enabled = true },
    dashboard = { enabled = false },
+   explorer={enabled=true},
    indent = { enabled = true },
    input = { enabled = true },
    picker = { enabled = true },
@@ -555,6 +600,10 @@ require("snacks").setup({
    statuscolumn = { enabled = true },
    words = { enabled = true },
 })
+
+vim.keymap.set({ "n", "t" }, "<C-_>", function()
+   require("snacks").terminal.toggle()
+end, { desc = "Toggle terminal" })
 
 vim.keymap.set({ "n", "t" }, "<C-/>", function()
    require("snacks").terminal.toggle()
@@ -578,4 +627,9 @@ require("which-key").add({
    { "[",         group = "Prev" },
 })
 
-vim.cmd.colorscheme("tokyodark")
+vim.keymap.set("n", "s", function() require("flash").jump() end, { desc = "Flash" })
+require("bufferline").setup{}
+require("lualine").setup{}
+require("nvim-autopairs").setup{}
+-- vim.cmd.colorscheme("tokyodark")
+vim.cmd.colorscheme("gruvbox")
