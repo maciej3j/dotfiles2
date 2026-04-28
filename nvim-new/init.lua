@@ -1,3 +1,4 @@
+vim.opt.shell = 'pwsh.exe'
 require('vim._core.ui2').enable({
    enable = true,
    msg = {
@@ -178,8 +179,9 @@ vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Half page up (centered)" })
 vim.keymap.set("x", "<leader>p", '"_dP', { desc = "Paste without yanking" })
 vim.keymap.set({ "n", "v" }, "<leader>x", '"_d', { desc = "Delete without yanking" })
 
-vim.keymap.set("n", "<leader>bn", ":bnext<CR>", { desc = "Next buffer" })
-vim.keymap.set("n", "<leader>bp", ":bprevious<CR>", { desc = "Previous buffer" })
+vim.keymap.set("n", "<S-l>", ":bnext<CR>", { desc = "Next buffer" })
+vim.keymap.set("n", "<S-h>", ":bprevious<CR>", { desc = "Previous buffer" })
+vim.keymap.set("n", "<leader>bd", ":bd<CR>", { desc = "Close buffer" })
 
 vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })
 vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Move to bottom window" })
@@ -290,6 +292,7 @@ vim.pack.add({
    "https://github.com/ellisonleao/gruvbox.nvim",
    "https://github.com/folke/which-key.nvim",
    "https://github.com/folke/flash.nvim",
+   "https://github.com/DrKJeff16/project.nvim",
    {
       src = 'https://github.com/mrcjkb/rustaceanvim',
       version = vim.version.range('^9')
@@ -313,12 +316,12 @@ packadd("which-key.nvim")
 packadd("LuaSnip")
 packadd("flash.nvim")
 packadd("bufferline.nvim")
-packadd("gruvbox.nvim")
+packadd("project.nvim")
+-- packadd("gruvbox.nvim")
 
 -- ============================================================================
 -- PLUGIN CONFIGS
 -- ============================================================================
-
 local setup_treesitter = function()
    local treesitter = require("nvim-treesitter")
    treesitter.setup({})
@@ -414,7 +417,6 @@ require("mini.indentscope").setup({})
 require("mini.trailspace").setup({})
 require("mini.bufremove").setup({})
 require("mini.notify").setup({})
-require("mini.icons").setup({})
 
 require("gitsigns").setup({
    signs = {
@@ -502,9 +504,9 @@ local function map(key, fn, desc)
    vim.keymap.set("n", key, fn, { noremap = true, silent = true, desc = desc })
 end
 
-map("<leader>gd", function() require("snacks").picker.lsp_definitions() end,
+map("gd", function() require("snacks").picker.lsp_definitions() end,
    "Go to definition")
-map("<leader>gS", function()
+map("gS", function()
    vim.cmd("vsplit"); vim.lsp.buf.definition()
 end, "Go to definition (split)")
 map("<leader>ca", function() require("fzf-lua").lsp_code_actions() end, "Code action")
@@ -518,7 +520,7 @@ map("<leader>fr", function() require("snacks").picker.lsp_references() end, "LSP
 map("<leader>ft", function() require("snacks").picker.lsp_typedefinitions() end, "LSP type defs")
 map("<leader>fs", function() require("snacks").picker.lsp_symbols() end, "LSP document symbols")
 map("<leader>fi", function() require("snacks").picker.lsp_implementations() end, "LSP implementations")
-
+vim.keymap.set("n", "<leader>fp", "<cmd>ProjectSnacks<cr>", { desc = "Projects" })
 map("<leader>cf", function()
    vim.lsp.buf.code_action({
       context = { only = { "source.organizeImports" }, diagnostics = {} },
@@ -569,7 +571,7 @@ vim.lsp.config("lua_ls", {
       },
    },
 })
-vim.lsp.config("pyright", {})
+-- vim.lsp.config("pyright", {})
 vim.lsp.config("bashls", {})
 vim.lsp.config("ts_ls", {})
 vim.lsp.config("gopls", {})
@@ -577,7 +579,7 @@ vim.lsp.config("clangd", {})
 
 vim.lsp.enable({
    "lua_ls",
-   "pyright",
+   -- "pyright",
    "ty",
    "ruff",
    "bashls",
@@ -599,6 +601,10 @@ require("snacks").setup({
    scope = { enabled = true },
    statuscolumn = { enabled = true },
    words = { enabled = true },
+   icons = {
+      enabled=true,
+      style="web-devicons",
+   },
 })
 
 vim.keymap.set({ "n", "t" }, "<C-_>", function()
@@ -631,5 +637,35 @@ vim.keymap.set("n", "s", function() require("flash").jump() end, { desc = "Flash
 require("bufferline").setup{}
 require("lualine").setup{}
 require("nvim-autopairs").setup{}
--- vim.cmd.colorscheme("tokyodark")
-vim.cmd.colorscheme("gruvbox")
+require("project").setup({
+   patterns = {
+      ".git",
+      ".github",
+      "package.json",
+      "Cargo.toml",
+      "go.mod",
+      "pyproject.toml",
+      "*.sln",
+      ".nvim.lua",
+   },
+   silent_chdir = true,
+   scope_chdir = "global",
+   snacks = {
+      enabled = true,
+      opts = {
+         sort = "newest",
+         title = "Projects",
+         layout = "select",
+         show = "paths",
+      },
+   },
+   fzf_lua = {
+      enabled = true,
+      sort = "newest",
+   },
+})
+vim.cmd.colorscheme("tokyodark")
+if vim.g.neovide then
+    vim.o.guifont = "FiraCode Nerd Font"
+    vim.api.nvim_set_keymap('n', '<F11>', ":let g:neovide_fullscreen = !g:neovide_fullscreen<CR>", {})
+end
