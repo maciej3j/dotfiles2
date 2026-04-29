@@ -99,7 +99,7 @@ vim.opt.incsearch = true      -- show matches as you type
 vim.opt.showmatch = true                          -- highlights matching brackets
 vim.opt.cmdheight = 1                             -- single line command line
 vim.opt.completeopt = "menuone,noinsert,noselect" -- completion options
-vim.opt.showmode = false -- do not show the mode, instead have it in statusline
+vim.opt.showmode = false                          -- do not show the mode, instead have it in statusline
 vim.opt.pumheight = 10                            -- popup menu height
 vim.opt.pumblend = 10                             -- popup menu transparency
 vim.opt.winblend = 0                              -- floating window transparency
@@ -297,6 +297,7 @@ vim.pack.add({
       src = 'https://github.com/mrcjkb/rustaceanvim',
       version = vim.version.range('^9')
    },
+   "https://github.com/folke/trouble.nvim",
 })
 
 local function packadd(name)
@@ -317,6 +318,7 @@ packadd("LuaSnip")
 packadd("flash.nvim")
 packadd("bufferline.nvim")
 packadd("project.nvim")
+packadd("trouble.nvim")
 -- packadd("gruvbox.nvim")
 
 -- ============================================================================
@@ -407,7 +409,33 @@ end, { desc = "Diagnostics buffer" })
 vim.keymap.set("n", "<leader>fX", function()
    require("snacks").picker.diagnostics()
 end, { desc = "Diagnostics Workspace" })
+require("trouble").setup({
+  auto_close = true, -- automatycznie zamknij gdy otworzysz plik
+  restore = true,    -- przywróć widok po ponownym otwarciu
+})
+vim.keymap.set("n", "[q", function()
+  if require("trouble").is_open() then
+    require("trouble").prev({ skip_groups = true, jump = true })
+  else
+    local ok, err = pcall(vim.cmd.cprev)
+    if not ok then vim.notify(err, vim.log.levels.ERROR) end
+  end
+end, { desc = "Previous Trouble/Quickfix Item" })
 
+vim.keymap.set("n", "]q", function()
+  if require("trouble").is_open() then
+    require("trouble").next({ skip_groups = true, jump = true })
+  else
+    local ok, err = pcall(vim.cmd.cnext)
+    if not ok then vim.notify(err, vim.log.levels.ERROR) end
+  end
+end, { desc = "Next Trouble/Quickfix Item" })
+vim.keymap.set("n", "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", { desc = "Diagnostics (Trouble)" })
+vim.keymap.set("n", "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", { desc = "Buffer Diagnostics (Trouble)" })
+vim.keymap.set("n", "<leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>", { desc = "Symbols (Trouble)" })
+vim.keymap.set("n", "<leader>cl", "<cmd>Trouble lsp toggle focus=false win.position=right<cr>", { desc = "LSP Definitions / references (Trouble)" })
+vim.keymap.set("n", "<leader>xL", "<cmd>Trouble loclist toggle<cr>", { desc = "Location List (Trouble)" })
+vim.keymap.set("n", "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", { desc = "Quickfix List (Trouble)" })
 require("mini.ai").setup({})
 require("mini.comment").setup({})
 require("mini.move").setup({})
@@ -593,7 +621,7 @@ vim.lsp.enable({
 require("snacks").setup({
    bigfile = { enabled = true },
    dashboard = { enabled = false },
-   explorer={enabled=true},
+   explorer = { enabled = true },
    indent = { enabled = true },
    input = { enabled = true },
    picker = { enabled = true },
@@ -602,8 +630,8 @@ require("snacks").setup({
    statuscolumn = { enabled = true },
    words = { enabled = true },
    icons = {
-      enabled=true,
-      style="web-devicons",
+      enabled = true,
+      style = "web-devicons",
    },
 })
 
@@ -629,14 +657,16 @@ require("which-key").add({
    { "<leader>d", group = "Diagnostics" },
    { "<leader>t", group = "Toggle" },
    { "<leader>o", group = "Organize" },
+   { "<leader>c", group = "Code/LSP"},
+   { "<leader>x", group = "Trouble/Diagnostics" },
    { "]",         group = "Next" },
    { "[",         group = "Prev" },
 })
 
 vim.keymap.set("n", "s", function() require("flash").jump() end, { desc = "Flash" })
-require("bufferline").setup{}
-require("lualine").setup{}
-require("nvim-autopairs").setup{}
+require("bufferline").setup {}
+require("lualine").setup {}
+require("nvim-autopairs").setup {}
 require("project").setup({
    patterns = {
       ".git",
@@ -666,6 +696,6 @@ require("project").setup({
 })
 vim.cmd.colorscheme("tokyodark")
 if vim.g.neovide then
-    vim.o.guifont = "FiraCode Nerd Font"
-    vim.api.nvim_set_keymap('n', '<F11>', ":let g:neovide_fullscreen = !g:neovide_fullscreen<CR>", {})
+   vim.o.guifont = "FiraCode Nerd Font"
+   vim.api.nvim_set_keymap('n', '<F11>', ":let g:neovide_fullscreen = !g:neovide_fullscreen<CR>", {})
 end
