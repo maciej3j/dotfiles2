@@ -1,85 +1,16 @@
 vim.opt.shell = 'pwsh.exe'
 require('vim._core.ui2').enable({
    enable = true,
-   msg = {
-      targets = {
-         [''] = 'msg',
-         empty = 'cmd',
-         bufwrite = 'msg',
-         confirm = 'cmd',
-         emsg = 'pager',
-         echo = 'msg',
-         echomsg = 'msg',
-         echoerr = 'pager',
-         completion = 'cmd',
-         list_cmd = 'pager',
-         lua_error = 'pager',
-         lua_print = 'msg',
-         progress = 'pager',
-         rpc_error = 'pager',
-         quickfix = 'msg',
-         search_cmd = 'cmd',
-         search_count = 'cmd',
-         shell_cmd = 'pager',
-         shell_err = 'pager',
-         shell_out = 'pager',
-         shell_ret = 'msg',
-         undo = 'msg',
-         verbose = 'pager',
-         wildlist = 'cmd',
-         wmsg = 'msg',
-         typed_cmd = 'cmd',
-      },
-      cmd = {
-         height = 0.5,
-      },
-      dialog = {
-         height = 0.5,
-      },
-      msg = {
-         height = 0.3,
-         timeout = 5000,
-      },
-      pager = {
-         height = 0.5,
-      },
-   },
 })
-
-vim.opt.termguicolors = true
-
-
-local function set_transparent() -- set UI component to transparent
-   local groups = {
-      "Normal",
-      "NormalNC",
-      "EndOfBuffer",
-      "NormalFloat",
-      "FloatBorder",
-      "SignColumn",
-      "StatusLine",
-      "StatusLineNC",
-      "TabLine",
-      "TabLineFill",
-      "TabLineSel",
-      "ColorColumn",
-   }
-   for _, g in ipairs(groups) do
-      vim.api.nvim_set_hl(0, g, { bg = "none" })
-   end
-   vim.api.nvim_set_hl(0, "TabLineFill", { bg = "none", fg = "#767676" })
-end
-
-set_transparent()
-
 -- ============================================================================
 -- OPTIONS
 -- ============================================================================
 vim.opt.number = true         -- line number
+vim.opt.termguicolors = true
 vim.opt.relativenumber = true -- relative line numbers
 vim.opt.cursorline = true     -- highlight current line
 vim.opt.wrap = false          -- do not wrap lines by default
-vim.opt.scrolloff = 10        -- keep 10 lines above/below cursor
+vim.opt.scrolloff = 5        -- keep 10 lines above/below cursor
 vim.opt.sidescrolloff = 10    -- keep 10 lines to left/right of cursor
 
 vim.opt.tabstop = 3           -- tabwidth
@@ -94,8 +25,6 @@ vim.opt.smartcase = true      -- case sensitive if uppercase in string
 vim.opt.hlsearch = true       -- highlight search matches
 vim.opt.incsearch = true      -- show matches as you type
 
--- vim.opt.signcolumn = "yes" -- always show a sign column
--- vim.opt.colorcolumn = "100" -- show a column at 100 position chars
 vim.opt.showmatch = true                          -- highlights matching brackets
 vim.opt.cmdheight = 1                             -- single line command line
 vim.opt.completeopt = "menuone,noinsert,noselect" -- completion options
@@ -105,7 +34,6 @@ vim.opt.pumblend = 10                             -- popup menu transparency
 vim.opt.winblend = 0                              -- floating window transparency
 vim.opt.conceallevel = 0                          -- do not hide markup
 vim.opt.concealcursor = ""                        -- do not hide cursorline in markup
--- vim.opt.lazyredraw = true                         -- do not redraw during macros
 vim.opt.synmaxcol = 300                           -- syntax highlighting limit
 vim.opt.fillchars = { eob = " " }                 -- hide "~" on empty lines
 
@@ -298,6 +226,8 @@ vim.pack.add({
       version = vim.version.range('^9')
    },
    "https://github.com/folke/trouble.nvim",
+   "https://github.com/nvim-lua/plenary.nvim",
+   "https://github.com/mikavilpas/yazi.nvim",
 })
 
 local function packadd(name)
@@ -319,6 +249,7 @@ packadd("flash.nvim")
 packadd("bufferline.nvim")
 packadd("project.nvim")
 packadd("trouble.nvim")
+packadd("yazi.nvim")
 -- packadd("gruvbox.nvim")
 
 -- ============================================================================
@@ -549,6 +480,8 @@ map("<leader>ft", function() require("snacks").picker.lsp_typedefinitions() end,
 map("<leader>fs", function() require("snacks").picker.lsp_symbols() end, "LSP document symbols")
 map("<leader>fi", function() require("snacks").picker.lsp_implementations() end, "LSP implementations")
 vim.keymap.set("n", "<leader>fp", "<cmd>ProjectSnacks<cr>", { desc = "Projects" })
+vim.keymap.set("n", "<leader>fy", "<cmd>Yazi<cr>", { desc = "Yazi" })
+vim.keymap.set("n", "<leader>-", "<cmd>Yazi toggle<cr>", { desc = "Resume Yazi" })
 map("<leader>cf", function()
    vim.lsp.buf.code_action({
       context = { only = { "source.organizeImports" }, diagnostics = {} },
