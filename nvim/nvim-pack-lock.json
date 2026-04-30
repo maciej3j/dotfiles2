@@ -64,6 +64,14 @@
       "rev": "c72328a5494b4502947a022fe69c0c47e53b6aa6",
       "src": "https://github.com/nvim-tree/nvim-web-devicons"
     },
+    "plenary.nvim": {
+      "rev": "74b06c6c75e4eeb3108ec01852001636d85a932b",
+      "src": "https://github.com/nvim-lua/plenary.nvim"
+    },
+    "project.nvim": {
+      "rev": "de82b2650463d1d18c3c4d42aa37d2c585a5f450",
+      "src": "https://github.com/DrKJeff16/project.nvim"
+    },
     "rustaceanvim": {
       "rev": "2497c7b2a61d4eb5dad716371a64ea82fb068bee",
       "src": "https://github.com/mrcjkb/rustaceanvim",
@@ -81,9 +89,17 @@
       "rev": "659aff3c73dc2e0159314050a81671f0b2eaad01",
       "src": "https://github.com/tiagovla/tokyodark.nvim"
     },
+    "trouble.nvim": {
+      "rev": "bd67efe408d4816e25e8491cc5ad4088e708a69a",
+      "src": "https://github.com/folke/trouble.nvim"
+    },
     "which-key.nvim": {
       "rev": "3aab2147e74890957785941f0c1ad87d0a44c15a",
       "src": "https://github.com/folke/which-key.nvim"
+    },
+    "yazi.nvim": {
+      "rev": "b4427509b21e470810e28a7b5cb6dc7df418ba9b",
+      "src": "https://github.com/mikavilpas/yazi.nvim"
     }
   }
 }
