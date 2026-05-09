@@ -448,15 +448,45 @@ vim.keymap.set("n", "<leader>dl", vim.diagnostic.open_float, { desc = "Show line
 require("blink.cmp").setup({
    fuzzy = { implementation = "prefer_rust" },
    keymap = {
-      preset = "enter",
+      preset = "none",
+      ['<CR>'] = { 'accept', 'fallback' },
+      ['<Tab>'] = {
+         function(cmp)
+            if cmp.snippet_active() then return cmp.snippet_forward() end
+            return cmp.select_next()
+         end,
+         'fallback',
+      },
+      ['<S-Tab>'] = {
+         function(cmp)
+            if cmp.snippet_active() then return cmp.snippet_backward() end
+            return cmp.select_prev()
+         end,
+         'fallback',
+      },
+      ['<Up>'] = { 'select_prev', 'fallback' },
+      ['<Down>'] = { 'select_next', 'fallback' },
+      ['<C-p>'] = { 'select_prev', 'fallback' },
+      ['<C-n>'] = { 'select_next', 'fallback' },
+      ['<C-space>'] = { 'show', 'show_documentation', 'hide_documentation' },
+      ['<C-e>'] = { 'hide' },
    },
    cmdline = { enabled = true },
    appearance = { nerd_font_variant = "mono" },
    completion = {
       keyword = { range = 'full' },
-      list = { selection = { preselect = false, auto_insert = true } },
+      list = {
+         selection = {
+            preselect = true,
+            auto_insert = true
+         }
+      },
       ghost_text = { enabled = true },
       menu = { auto_show = true },
+      documentation = {
+         auto_show = true,
+         auto_show_delay_ms = 0,
+      },
    },
    sources = { default = { "lsp", "path", "snippets", "buffer" } },
    snippets = {
@@ -555,7 +585,3 @@ require("project").setup({
    },
 })
 vim.cmd.colorscheme("tokyodark")
-if vim.g.neovide then
-   vim.o.guifont = "FiraCode Nerd Font"
-   vim.api.nvim_set_keymap('n', '<F11>', ":let g:neovide_fullscreen = !g:neovide_fullscreen<CR>", {})
-end
