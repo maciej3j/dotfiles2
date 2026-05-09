@@ -347,7 +347,7 @@ require("mason").setup({})
 
 require("mason-lspconfig").setup({
    ensure_installed = {
-      "lua_ls", "clangd", "bashls", "ts_ls", "gopls", "ruff", "ty",
+      "lua_ls", "bashls","ruff", "ty", "ruff"
    },
    automatic_installation = true,
 })
