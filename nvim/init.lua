@@ -88,7 +88,6 @@ vim.keymap.set("n", "N", "Nzzzv", { desc = "Previous search result (centered)" }
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Half page down (centered)" })
 vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Half page up (centered)" })
 vim.keymap.set("x", "<leader>p", '"_dP', { desc = "Paste without yanking" })
-vim.keymap.set({ "n", "v" }, "<leader>x", '"_d', { desc = "Delete without yanking" })
 vim.keymap.set("n", "<S-l>", ":bnext<CR>", { desc = "Next buffer" })
 vim.keymap.set("n", "<S-h>", ":bprevious<CR>", { desc = "Previous buffer" })
 vim.keymap.set("n", "<leader>bd", ":bd<CR>", { desc = "Close buffer" })
@@ -109,6 +108,7 @@ vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 vim.keymap.set("v", "<", "<gv", { desc = "Indent left and reselect" })
 vim.keymap.set("v", ">", ">gv", { desc = "Indent right and reselect" })
 vim.keymap.set("n", "J", "mzJ`z", { desc = "Join lines and keep cursor position" })
+vim.keymap.set("n", "K", "<cmd> Lspsaga hover_doc<CR>", { desc = "Lspsaga hover_doc" })
 vim.keymap.set("n", "<leader>pa", function() -- show file path
    local path = vim.fn.expand("%:p")
    vim.fn.setreg("+", path)
@@ -164,6 +164,7 @@ vim.pack.add({
    "https://github.com/akinsho/bufferline.nvim",
    "https://github.com/nvim-lualine/lualine.nvim",
    "https://www.github.com/echasnovski/mini.nvim",
+   "https://github.com/MagicDuck/grug-far.nvim",
    "https://www.github.com/ibhagwan/fzf-lua",
    {
       src = "https://github.com/nvim-treesitter/nvim-treesitter",
@@ -194,6 +195,8 @@ vim.pack.add({
    "https://github.com/folke/trouble.nvim",
    "https://github.com/nvim-lua/plenary.nvim",
    "https://github.com/mikavilpas/yazi.nvim",
+   "https://github.com/nvimdev/lspsaga.nvim",
+   "https://github.com/rose-pine/neovim",
 })
 
 local function packadd(name)
@@ -215,6 +218,9 @@ packadd("bufferline.nvim")
 packadd("project.nvim")
 packadd("trouble.nvim")
 packadd("yazi.nvim")
+packadd("grug-far.nvim")
+packadd("lspsaga.nvim")
+packadd("neovim")
 
 local setup_treesitter = function()
    local treesitter = require("nvim-treesitter")
@@ -266,19 +272,17 @@ end
 setup_treesitter()
 
 vim.keymap.set("n", "<leader>e", function()
-   require("snacks").explorer.open()
+   require("snacks").explorer.open({hidden=true})
 end, { desc = "Explorer" })
-vim.keymap.set("n", "<leader>E", function()
-   require("snacks").explorer.reveal()
-end, { desc = "Explorer Open" })
+vim.keymap.set("n", "<leader>E", "<cmd>Yazi<cr>", { desc = "Yazi" })
 
 require("fzf-lua").setup({})
 
 vim.keymap.set("n", "<leader>ff", function()
-   require("snacks").picker.files()
+   require("snacks").picker.files({hidden=true})
 end, { desc = "Find File" })
 vim.keymap.set("n", "<leader>fg", function()
-   require("snacks").picker.grep()
+   require("snacks").picker.grep({hidden=true})
 end, { desc = "Live Grep" })
 vim.keymap.set("n", "<leader>fb", function()
    require("snacks").picker.buffers()
@@ -347,11 +351,10 @@ require("mason").setup({})
 
 require("mason-lspconfig").setup({
    ensure_installed = {
-      "lua_ls", "bashls","ruff", "ty", "ruff"
+      "lua_ls", "bashls", "ruff", "ty",
    },
    automatic_installation = true,
 })
-
 vim.keymap.set("n", "]h", function()
    require("gitsigns").next_hunk()
 end, { desc = "Next git hunk" })
@@ -422,13 +425,12 @@ map("<leader>D", function() vim.diagnostic.open_float({ scope = "line" }) end, "
 map("<leader>d", function() vim.diagnostic.open_float({ scope = "cursor" }) end, "Cursor diagnostics")
 map("<leader>nd", function() vim.diagnostic.jump({ count = 1 }) end, "Next diagnostic")
 map("<leader>pd", function() vim.diagnostic.jump({ count = -1 }) end, "Prev diagnostic")
-map("K", vim.lsp.buf.hover, "Hover docs")
-map("<leader>fr", function() require("snacks").picker.lsp_references() end, "LSP references")
+map("<leader>fr", function() require("grug-far").open() end, "Search and Replace")
+map("<leader>fR", function() require("snacks").picker.lsp_references() end, "LSP references")
 map("<leader>ft", function() require("snacks").picker.lsp_typedefinitions() end, "LSP type defs")
 map("<leader>fs", function() require("snacks").picker.lsp_symbols() end, "LSP document symbols")
 map("<leader>fi", function() require("snacks").picker.lsp_implementations() end, "LSP implementations")
 vim.keymap.set("n", "<leader>fp", "<cmd>ProjectSnacks<cr>", { desc = "Projects" })
-vim.keymap.set("n", "<leader>fy", "<cmd>Yazi<cr>", { desc = "Yazi" })
 vim.keymap.set("n", "<leader>-", "<cmd>Yazi toggle<cr>", { desc = "Resume Yazi" })
 map("<leader>cf", function()
    vim.lsp.buf.code_action({
@@ -495,7 +497,6 @@ require("blink.cmp").setup({
       end,
    },
 })
-
 vim.lsp.config["*"] = {
    capabilities = require("blink.cmp").get_lsp_capabilities(),
 }
@@ -514,6 +515,7 @@ require("snacks").setup({
    explorer = { enabled = true },
    indent = { enabled = true },
    input = { enabled = true },
+   notify = {enabled = true},
    picker = { enabled = true },
    quickfile = { enabled = true },
    scope = { enabled = true },
@@ -554,6 +556,7 @@ require("which-key").add({
 })
 
 vim.keymap.set("n", "s", function() require("flash").jump() end, { desc = "Flash" })
+vim.keymap.set("i", "<C-s>", "<cmd>write<CR><Esc>", { desc = "Save file" })
 require("bufferline").setup {}
 require("lualine").setup {}
 require("nvim-autopairs").setup {}
@@ -584,4 +587,19 @@ require("project").setup({
       sort = "newest",
    },
 })
-vim.cmd.colorscheme("tokyodark")
+require('lspsaga').setup({
+   lightbulb = {enable = false}
+})
+require("rose-pine").setup({
+   styles = {
+      italic = false,
+   },
+   highlight_groups = {
+      Comment = { italic = true },
+   }
+})
+vim.cmd.colorscheme("rose-pine")
+if vim.g.neovide then
+   vim.o.guifont = "FiraCode Nerd Font"
+   vim.api.nvim_set_keymap('n', '<F11>', ":let g:neovide_fullscreen = !g:neovide_fullscreen<CR>", {})
+end
