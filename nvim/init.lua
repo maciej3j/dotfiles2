@@ -70,7 +70,7 @@ vim.opt.splitright = true                            -- vertical splits go right
 vim.opt.wildmenu = true                              -- tab completion
 vim.opt.wildmode =
 "longest:full,full"                                  -- complete longest common match, full completion list, cycle through with Tab
-vim.opt.diffopt:append("linematch:60")               -- improve diff display
+vim.opt.diffopt:append({ "linematch:60", "inline:word" })
 vim.opt.redrawtime = 10000                           -- increase neovim redraw tolerance
 vim.opt.maxmempattern = 20000                        -- increase max memory
 vim.g.mapleader = " "
@@ -113,7 +113,6 @@ vim.keymap.set("n", "<leader>pa", function() -- show file path
    vim.fn.setreg("+", path)
    print("file:", path)
 end, { desc = "Copy full file path" })
-
 vim.keymap.set("n", "<leader>td", function()
    vim.diagnostic.enable(not vim.diagnostic.is_enabled())
 end, { desc = "Toggle diagnostics" })
@@ -200,6 +199,8 @@ vim.pack.add({
    "https://github.com/rebelot/kanagawa.nvim",
    "https://github.com/nyoom-engineering/oxocarbon.nvim",
    "https://github.com/mcauley-penney/techbase.nvim",
+   "https://github.com/MunifTanjim/nui.nvim",
+   "https://github.com/folke/noice.nvim",
 })
 
 local function packadd(name)
@@ -224,6 +225,8 @@ packadd("yazi.nvim")
 packadd("grug-far.nvim")
 packadd("neovim")
 packadd("themery.nvim")
+packadd("nui.nvim")
+packadd("noice.nvim")
 
 local setup_treesitter = function()
    local treesitter = require("nvim-treesitter")
@@ -328,6 +331,7 @@ vim.keymap.set("n", "<leader>cl", "<cmd>Trouble lsp toggle focus=false win.posit
    { desc = "LSP Definitions / references (Trouble)" })
 vim.keymap.set("n", "<leader>xL", "<cmd>Trouble loclist toggle<cr>", { desc = "Location List (Trouble)" })
 vim.keymap.set("n", "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", { desc = "Quickfix List (Trouble)" })
+vim.keymap.set("n", "<leader>tc", "<cmd>Themery<cr>", {desc = "Open Themery"})
 require("mini.ai").setup({})
 require("mini.comment").setup({})
 require("mini.move").setup({})
@@ -335,7 +339,7 @@ require("mini.cursorword").setup({})
 require("mini.indentscope").setup({})
 require("mini.trailspace").setup({})
 require("mini.bufremove").setup({})
-require("mini.notify").setup({})
+-- require("mini.notify").setup({})
 
 require("gitsigns").setup({
    signs = {
@@ -607,3 +611,21 @@ if vim.g.neovide then
    vim.o.guifont = "FiraCode Nerd Font"
    vim.api.nvim_set_keymap('n', '<F11>', ":let g:neovide_fullscreen = !g:neovide_fullscreen<CR>", {})
 end
+
+require("noice").setup({
+  lsp = {
+    override = {
+      ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+      ["vim.lsp.util.stylize_markdown"] = true,
+      ["cmp.entry.get_documentation"] = true, -- requires hrsh7th/nvim-cmp
+    },
+  },
+  -- you can enable a preset for easier configuration
+  presets = {
+    bottom_search = true, -- use a classic bottom cmdline for search
+    command_palette = true, -- position the cmdline and popupmenu together
+    long_message_to_split = true, -- long messages will be sent to a split
+    inc_rename = false, -- enables an input dialog for inc-rename.nvim
+    lsp_doc_border = false, -- add a border to hover docs and signature help
+  },
+})
