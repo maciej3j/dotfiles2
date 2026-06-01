@@ -108,7 +108,6 @@ vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 vim.keymap.set("v", "<", "<gv", { desc = "Indent left and reselect" })
 vim.keymap.set("v", ">", ">gv", { desc = "Indent right and reselect" })
 vim.keymap.set("n", "J", "mzJ`z", { desc = "Join lines and keep cursor position" })
-vim.keymap.set("n", "K", "<cmd> Lspsaga hover_doc<CR>", { desc = "Lspsaga hover_doc" })
 vim.keymap.set("n", "<leader>pa", function() -- show file path
    local path = vim.fn.expand("%:p")
    vim.fn.setreg("+", path)
@@ -195,8 +194,12 @@ vim.pack.add({
    "https://github.com/folke/trouble.nvim",
    "https://github.com/nvim-lua/plenary.nvim",
    "https://github.com/mikavilpas/yazi.nvim",
-   "https://github.com/nvimdev/lspsaga.nvim",
    "https://github.com/rose-pine/neovim",
+   "https://github.com/zaldih/themery.nvim",
+   "https://github.com/ellisonleao/gruvbox.nvim",
+   "https://github.com/rebelot/kanagawa.nvim",
+   "https://github.com/nyoom-engineering/oxocarbon.nvim",
+   "https://github.com/mcauley-penney/techbase.nvim",
 })
 
 local function packadd(name)
@@ -219,8 +222,8 @@ packadd("project.nvim")
 packadd("trouble.nvim")
 packadd("yazi.nvim")
 packadd("grug-far.nvim")
-packadd("lspsaga.nvim")
 packadd("neovim")
+packadd("themery.nvim")
 
 local setup_treesitter = function()
    local treesitter = require("nvim-treesitter")
@@ -587,9 +590,6 @@ require("project").setup({
       sort = "newest",
    },
 })
-require('lspsaga').setup({
-   lightbulb = {enable = false}
-})
 require("rose-pine").setup({
    styles = {
       italic = false,
@@ -597,6 +597,10 @@ require("rose-pine").setup({
    highlight_groups = {
       Comment = { italic = true },
    }
+})
+require("themery").setup({
+  themes = vim.fn.getcompletion('', 'color'),
+  livePreview = true,
 })
 vim.cmd.colorscheme("rose-pine")
 if vim.g.neovide then
