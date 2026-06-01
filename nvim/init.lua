@@ -4,9 +4,10 @@ end
 require('vim._core.ui2').enable({
    enable = true,
 })
+vim.opt.termguicolors = true
+vim.opt.bg = "dark"
 
 vim.opt.number = true                             -- line number
-vim.opt.termguicolors = true
 vim.opt.relativenumber = true                     -- relative line numbers
 vim.opt.cursorline = true                         -- highlight current line
 vim.opt.wrap = false                              -- do not wrap lines by default
@@ -190,8 +191,7 @@ vim.pack.add({
    "https://github.com/rebelot/kanagawa.nvim",
    "https://github.com/nyoom-engineering/oxocarbon.nvim",
    "https://github.com/mcauley-penney/techbase.nvim",
-   "https://github.com/MunifTanjim/nui.nvim",
-   "https://github.com/folke/noice.nvim",
+   "https://github.com/rachartier/tiny-cmdline.nvim",
 })
 
 local setup_treesitter = function()
@@ -303,7 +303,17 @@ require("blink.cmp").setup({
       ['<C-space>'] = { 'show', 'show_documentation', 'hide_documentation' },
       ['<C-e>'] = { 'hide' },
    },
-   cmdline = { enabled = true },
+   cmdline = {
+      enabled = true,
+      completion = {
+         menu = {
+            auto_show = function()
+               return vim.fn.getcmdtype() == ":"
+            end,
+         }
+
+      }
+   },
    appearance = { nerd_font_variant = "mono" },
    completion = {
       keyword = { range = 'full' },
@@ -429,27 +439,6 @@ require("themery").setup({
    themes = vim.fn.getcompletion('', 'color'),
    livePreview = true,
 })
-vim.cmd.colorscheme("rose-pine")
-
-require("noice").setup({
-   lsp = {
-      override = {
-         ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-         ["vim.lsp.util.stylize_markdown"] = true,
-         ["cmp.entry.get_documentation"] = true,
-      },
-   },
-   presets = {
-      bottom_search = true,
-      command_palette = true,
-      long_message_to_split = true,
-      inc_rename = false,
-      lsp_doc_border = false,
-   },
-   routes = {
-      {
-         filter = { event = "msg_show", any = { { find = "written" }, { find = "trailing" } } },
-         opts = { skip = true },
-      },
-   },
+require("tiny-cmdline").setup({
+   on_reposition = require("tiny-cmdline").adapters.blink,
 })

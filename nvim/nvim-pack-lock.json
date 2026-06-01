@@ -133,6 +133,10 @@
       "rev": "bfa58f4b279d21cb515b28023e1b68ec908584b2",
       "src": "https://github.com/zaldih/themery.nvim"
     },
+    "tiny-cmdline.nvim": {
+      "rev": "b1db8607a78f0c23b3bae08e079b1b7f147619d7",
+      "src": "https://github.com/rachartier/tiny-cmdline.nvim"
+    },
     "tokyodark.nvim": {
       "rev": "659aff3c73dc2e0159314050a81671f0b2eaad01",
       "src": "https://github.com/tiagovla/tokyodark.nvim"
