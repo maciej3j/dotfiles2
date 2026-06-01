@@ -35,9 +35,7 @@ vim.opt.synmaxcol = 300                           -- syntax highlighting limit
 vim.opt.fillchars = { eob = " " }                 -- hide "~" on empty lines
 
 local undodir = vim.fn.expand("~/.vim/undodir")
-if
-    vim.fn.isdirectory(undodir) == 0 -- create undodir if nonexistent
-then
+if vim.fn.isdirectory(undodir) == 0 then          -- create undodir if nonexistent
    vim.fn.mkdir(undodir, "p")
 end
 
@@ -68,8 +66,7 @@ vim.opt.foldlevel = 99                               -- start with all folds ope
 vim.opt.splitbelow = true                            -- horizontal splits go below
 vim.opt.splitright = true                            -- vertical splits go right
 vim.opt.wildmenu = true                              -- tab completion
-vim.opt.wildmode =
-"longest:full,full"                                  -- complete longest common match, full completion list, cycle through with Tab
+vim.opt.wildmode = "longest:full,full"               -- complete longest common match, full completion list, cycle through with Tab
 vim.opt.diffopt:append({ "linematch:60", "inline:word" })
 vim.opt.redrawtime = 10000                           -- increase neovim redraw tolerance
 vim.opt.maxmempattern = 20000                        -- increase max memory
@@ -94,7 +91,7 @@ vim.keymap.set("n", "<leader>bd", ":bd<CR>", { desc = "Close buffer" })
 vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })
 vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Move to bottom window" })
 vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Move to top window" })
-vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Move to right window" })
+vim.keymap.set("n", "<C-l>", "<W-w>l", { desc = "Move to right window" })
 vim.keymap.set("n", "<leader>sv", ":vsplit<CR>", { desc = "Split window vertically" })
 vim.keymap.set("n", "<leader>sh", ":split<CR>", { desc = "Split window horizontally" })
 vim.keymap.set("n", "<C-Up>", ":resize +2<CR>", { desc = "Increase window height" })
@@ -108,7 +105,7 @@ vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 vim.keymap.set("v", "<", "<gv", { desc = "Indent left and reselect" })
 vim.keymap.set("v", ">", ">gv", { desc = "Indent right and reselect" })
 vim.keymap.set("n", "J", "mzJ`z", { desc = "Join lines and keep cursor position" })
-vim.keymap.set("n", "<leader>pa", function() -- show file path
+vim.keymap.set("n", "<leader>pa", function()
    local path = vim.fn.expand("%:p")
    vim.fn.setreg("+", path)
    print("file:", path)
@@ -130,18 +127,11 @@ vim.api.nvim_create_autocmd("BufReadPost", {
    group = augroup,
    desc = "Restore last cursor position",
    callback = function()
-      if vim.o.diff then -- except in diff mode
-         return
-      end
-
-      local last_pos = vim.api.nvim_buf_get_mark(0, '"') -- {line, col}
+      if vim.o.diff then return end
+      local last_pos = vim.api.nvim_buf_get_mark(0, '"')
       local last_line = vim.api.nvim_buf_line_count(0)
-
       local row = last_pos[1]
-      if row < 1 or row > last_line then
-         return
-      end
-
+      if row < 1 or row > last_line then return end
       pcall(vim.api.nvim_win_set_cursor, 0, last_pos)
    end,
 })
@@ -156,6 +146,7 @@ vim.api.nvim_create_autocmd("FileType", {
    end,
 })
 
+-- Native Package Array Loader
 vim.pack.add({
    "https://github.com/windwp/nvim-autopairs",
    "https://www.github.com/lewis6991/gitsigns.nvim",
@@ -203,52 +194,13 @@ vim.pack.add({
    "https://github.com/folke/noice.nvim",
 })
 
-local function packadd(name)
-   vim.cmd("packadd " .. name)
-end
-packadd("nvim-treesitter")
-packadd("gitsigns.nvim")
-packadd("mini.nvim")
-packadd("nvim-web-devicons")
-packadd("fzf-lua")
-packadd("nvim-lspconfig")
-packadd("mason.nvim")
-packadd("blink.cmp")
-packadd("snacks.nvim")
-packadd("which-key.nvim")
-packadd("LuaSnip")
-packadd("flash.nvim")
-packadd("bufferline.nvim")
-packadd("project.nvim")
-packadd("trouble.nvim")
-packadd("yazi.nvim")
-packadd("grug-far.nvim")
-packadd("neovim")
-packadd("themery.nvim")
-packadd("nui.nvim")
-packadd("noice.nvim")
-
 local setup_treesitter = function()
    local treesitter = require("nvim-treesitter")
    treesitter.setup({})
    local ensure_installed = {
-      "vim",
-      "vimdoc",
-      "rust",
-      "c",
-      "cpp",
-      "go",
-      "html",
-      "css",
-      "javascript",
-      "json",
-      "lua",
-      "markdown",
-      "python",
-      "typescript",
-      "vue",
-      "svelte",
-      "bash",
+      "vim", "vimdoc", "rust", "c", "cpp", "go", "html", "css",
+      "javascript", "json", "lua", "markdown", "python", "typescript",
+      "vue", "svelte", "bash",
    }
 
    local config = require("nvim-treesitter.config")
@@ -274,38 +226,21 @@ local setup_treesitter = function()
       end,
    })
 end
-
 setup_treesitter()
 
-vim.keymap.set("n", "<leader>e", function()
-   require("snacks").explorer.open({hidden=true})
-end, { desc = "Explorer" })
+vim.keymap.set("n", "<leader>e", function() require("snacks").explorer.open({ hidden = true }) end, { desc = "Explorer" })
 vim.keymap.set("n", "<leader>E", "<cmd>Yazi<cr>", { desc = "Yazi" })
 
 require("fzf-lua").setup({})
 
-vim.keymap.set("n", "<leader>ff", function()
-   require("snacks").picker.files({hidden=true})
-end, { desc = "Find File" })
-vim.keymap.set("n", "<leader>fg", function()
-   require("snacks").picker.grep({hidden=true})
-end, { desc = "Live Grep" })
-vim.keymap.set("n", "<leader>fb", function()
-   require("snacks").picker.buffers()
-end, { desc = "Buffers" })
-vim.keymap.set("n", "<leader>fh", function()
-   require("snacks").picker.tags()
-end, { desc = "Help" })
-vim.keymap.set("n", "<leader>fx", function()
-   require("snacks").picker.diagnostics_buffer()
-end, { desc = "Diagnostics buffer" })
-vim.keymap.set("n", "<leader>fX", function()
-   require("snacks").picker.diagnostics()
-end, { desc = "Diagnostics Workspace" })
-require("trouble").setup({
-   auto_close = true,
-   restore = true,
-})
+vim.keymap.set("n", "<leader>ff", function() require("snacks").picker.files({ hidden = true }) end, { desc = "Find File" })
+vim.keymap.set("n", "<leader>fg", function() require("snacks").picker.grep({ hidden = true }) end, { desc = "Live Grep" })
+vim.keymap.set("n", "<leader>fb", function() require("snacks").picker.buffers() end, { desc = "Buffers" })
+vim.keymap.set("n", "<leader>fh", function() require("snacks").picker.tags() end, { desc = "Help" })
+vim.keymap.set("n", "<leader>fx", function() require("snacks").picker.diagnostics_buffer() end, { desc = "Diagnostics buffer" })
+vim.keymap.set("n", "<leader>fX", function() require("snacks").picker.diagnostics() end, { desc = "Diagnostics Workspace" })
+
+require("trouble").setup({ auto_close = true, restore = true })
 vim.keymap.set("n", "[q", function()
    if require("trouble").is_open() then
       require("trouble").prev({ skip_groups = true, jump = true })
@@ -323,15 +258,16 @@ vim.keymap.set("n", "]q", function()
       if not ok then vim.notify(err, vim.log.levels.ERROR) end
    end
 end, { desc = "Next Trouble/Quickfix Item" })
+
 vim.keymap.set("n", "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", { desc = "Diagnostics (Trouble)" })
-vim.keymap.set("n", "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
-   { desc = "Buffer Diagnostics (Trouble)" })
+vim.keymap.set("n", "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", { desc = "Buffer Diagnostics (Trouble)" })
 vim.keymap.set("n", "<leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>", { desc = "Symbols (Trouble)" })
-vim.keymap.set("n", "<leader>cl", "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
-   { desc = "LSP Definitions / references (Trouble)" })
+vim.keymap.set("n", "<leader>cl", "<cmd>Trouble lsp toggle focus=false win.position=right<cr>", { desc = "LSP Definitions / references (Trouble)" })
 vim.keymap.set("n", "<leader>xL", "<cmd>Trouble loclist toggle<cr>", { desc = "Location List (Trouble)" })
 vim.keymap.set("n", "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", { desc = "Quickfix List (Trouble)" })
-vim.keymap.set("n", "<leader>tc", "<cmd>Themery<cr>", {desc = "Open Themery"})
+vim.keymap.set("n", "<leader>tc", "<cmd>Themery<cr>", { desc = "Open Themery" })
+
+-- Core Mini Utility Stack
 require("mini.ai").setup({})
 require("mini.comment").setup({})
 require("mini.move").setup({})
@@ -339,94 +275,91 @@ require("mini.cursorword").setup({})
 require("mini.indentscope").setup({})
 require("mini.trailspace").setup({})
 require("mini.bufremove").setup({})
--- require("mini.notify").setup({})
 
 require("gitsigns").setup({
    signs = {
-      add = { text = "\u{2590}" },          -- ▏
-      change = { text = "\u{2590}" },       -- ▐
-      delete = { text = "\u{2590}" },       -- ◦
-      topdelete = { text = "\u{25e6}" },    -- ◦
-      changedelete = { text = "\u{25cf}" }, -- ●
-      untracked = { text = "\u{25cb}" },    -- ○
+      add = { text = "\u{2590}" },
+      change = { text = "\u{2590}" },
+      delete = { text = "\u{2590}" },
+      topdelete = { text = "\u{25e6}" },
+      changedelete = { text = "\u{25cf}" },
+      untracked = { text = "\u{25cb}" },
    },
    signcolumn = true,
    current_line_blame = false,
 })
 
+require("blink.cmp").setup({
+   fuzzy = { implementation = "prefer_rust" },
+   keymap = {
+      preset = "none",
+      ['<CR>'] = { 'accept', 'fallback' },
+      ['<Tab>'] = { function(cmp) if cmp.snippet_active() then return cmp.snippet_forward() end return cmp.select_next() end, 'fallback' },
+      ['<S-Tab>'] = { function(cmp) if cmp.snippet_active() then return cmp.snippet_backward() end return cmp.select_prev() end, 'fallback' },
+      ['<Up>'] = { 'select_prev', 'fallback' },
+      ['<Down>'] = { 'select_next', 'fallback' },
+      ['<C-p>'] = { 'select_prev', 'fallback' },
+      ['<C-n>'] = { 'select_next', 'fallback' },
+      ['<C-space>'] = { 'show', 'show_documentation', 'hide_documentation' },
+      ['<C-e>'] = { 'hide' },
+   },
+   cmdline = { enabled = true },
+   appearance = { nerd_font_variant = "mono" },
+   completion = {
+      keyword = { range = 'full' },
+      list = { selection = { preselect = true, auto_insert = true } },
+      ghost_text = { enabled = true },
+      menu = { auto_show = true },
+      documentation = { auto_show = true, auto_show_delay_ms = 0 },
+   },
+   sources = { default = { "lsp", "path", "snippets", "buffer" } },
+   snippets = { expand = function(snippet) require("luasnip").lsp_expand(snippet) end },
+})
+
 require("mason").setup({})
-
 require("mason-lspconfig").setup({
-   ensure_installed = {
-      "lua_ls", "bashls", "ruff", "ty",
-   },
+   ensure_installed = { "lua_ls", "bashls", "ruff", "ty" },
    automatic_installation = true,
-})
-vim.keymap.set("n", "]h", function()
-   require("gitsigns").next_hunk()
-end, { desc = "Next git hunk" })
-vim.keymap.set("n", "[h", function()
-   require("gitsigns").prev_hunk()
-end, { desc = "Previous git hunk" })
-vim.keymap.set("n", "<leader>hs", function()
-   require("gitsigns").stage_hunk()
-end, { desc = "Stage hunk" })
-vim.keymap.set("n", "<leader>hr", function()
-   require("gitsigns").reset_hunk()
-end, { desc = "Reset hunk" })
-vim.keymap.set("n", "<leader>hp", function()
-   require("gitsigns").preview_hunk()
-end, { desc = "Preview hunk" })
-vim.keymap.set("n", "<leader>hb", function()
-   require("gitsigns").blame_line({ full = true })
-end, { desc = "Blame line" })
-vim.keymap.set("n", "<leader>hB", function()
-   require("gitsigns").toggle_current_line_blame()
-end, { desc = "Toggle inline blame" })
-vim.keymap.set("n", "<leader>hd", function()
-   require("gitsigns").diffthis()
-end, { desc = "Diff this" })
-
-local diagnostic_signs = {
-   Error = " ",
-   Warn = " ",
-   Hint = "",
-   Info = "",
-}
-
-vim.diagnostic.config({
-   virtual_text = { prefix = "●", spacing = 4 },
-   signs = {
-      text = {
-         [vim.diagnostic.severity.ERROR] = diagnostic_signs.Error,
-         [vim.diagnostic.severity.WARN] = diagnostic_signs.Warn,
-         [vim.diagnostic.severity.INFO] = diagnostic_signs.Info,
-         [vim.diagnostic.severity.HINT] = diagnostic_signs.Hint,
-      },
-   },
-   underline = true,
-   update_in_insert = false,
-   severity_sort = true,
-   float = {
-      border = "rounded",
-      source = "always",
-      header = "",
-      prefix = "",
-      focusable = false,
-      style = "minimal",
+   handlers = {
+      function(server_name)
+         -- Dynamically maps blink's capabilities to servers as Mason provisions them
+         local capabilities = require("blink.cmp").get_lsp_capabilities()
+         require("lspconfig")[server_name].setup({
+            capabilities = capabilities,
+         })
+      end,
+      ["lua_ls"] = function()
+         local capabilities = require("blink.cmp").get_lsp_capabilities()
+         require("lspconfig").lua_ls.setup({
+            capabilities = capabilities,
+            settings = {
+               Lua = {
+                  diagnostics = { globals = { "vim" } },
+                  telemetry = { enable = false },
+               },
+            },
+         })
+      end,
    },
 })
+
+vim.keymap.set("n", "]h", function() require("gitsigns").next_hunk() end, { desc = "Next git hunk" })
+vim.keymap.set("n", "[h", function() require("gitsigns").prev_hunk() end, { desc = "Previous git hunk" })
+vim.keymap.set("n", "<leader>hs", function() require("gitsigns").stage_hunk() end, { desc = "Stage hunk" })
+vim.keymap.set("n", "<leader>hr", function() require("gitsigns").reset_hunk() end, { desc = "Reset hunk" })
+vim.keymap.set("n", "<leader>hp", function() require("gitsigns").preview_hunk() end, { desc = "Preview hunk" })
+vim.keymap.set("n", "<leader>hb", function() require("gitsigns").blame_line({ full = true }) end, { desc = "Blame line" })
+vim.keymap.set("n", "<leader>hB", function() require("gitsigns").toggle_current_line_blame() end, { desc = "Toggle inline blame" })
+vim.keymap.set("n", "<leader>hd", function() require("gitsigns").diffthis() end, { desc = "Diff this" })
+
 
 local function map(key, fn, desc)
    vim.keymap.set("n", key, fn, { noremap = true, silent = true, desc = desc })
 end
 
-map("gd", function() require("snacks").picker.lsp_definitions() end,
-   "Go to definition")
-map("gS", function()
-   vim.cmd("vsplit"); vim.lsp.buf.definition()
-end, "Go to definition (split)")
-map("<leader>ca", function() require("fzf-lua").lsp_code_actions() end, "Code action")
+map("gd", function() require("snacks").picker.lsp_definitions() end, "Go to definition")
+map("gS", function() vim.cmd("vsplit"); vim.lsp.buf.definition() end, "Go to definition (split)")
+map("<leader>ca", function() require("snacks").picker.lsp_code_actions() end, "Code action")
 map("<leader>rn", vim.lsp.buf.rename, "Rename symbol")
 map("<leader>D", function() vim.diagnostic.open_float({ scope = "line" }) end, "Line diagnostics")
 map("<leader>d", function() vim.diagnostic.open_float({ scope = "cursor" }) end, "Cursor diagnostics")
@@ -440,126 +373,38 @@ map("<leader>fi", function() require("snacks").picker.lsp_implementations() end,
 vim.keymap.set("n", "<leader>fp", "<cmd>ProjectSnacks<cr>", { desc = "Projects" })
 vim.keymap.set("n", "<leader>-", "<cmd>Yazi toggle<cr>", { desc = "Resume Yazi" })
 map("<leader>cf", function()
-   vim.lsp.buf.code_action({
-      context = { only = { "source.organizeImports" }, diagnostics = {} },
-      apply = true,
-   })
-   vim.defer_fn(function()
-      vim.lsp.buf.format({})
-   end, 50)
+   vim.lsp.buf.code_action({ context = { only = { "source.organizeImports" }, diagnostics = {} }, apply = true })
+   vim.defer_fn(function() vim.lsp.buf.format({}) end, 50)
 end, "Organize imports & format")
 
-vim.keymap.set("n", "<leader>q", function()
-   vim.diagnostic.setloclist({ open = true })
-end, { desc = "Open diagnostic list" })
+vim.keymap.set("n", "<leader>q", function() vim.diagnostic.setloclist({ open = true }) end, { desc = "Open diagnostic list" })
 vim.keymap.set("n", "<leader>dl", vim.diagnostic.open_float, { desc = "Show line diagnostics" })
 
-require("blink.cmp").setup({
-   fuzzy = { implementation = "prefer_rust" },
-   keymap = {
-      preset = "none",
-      ['<CR>'] = { 'accept', 'fallback' },
-      ['<Tab>'] = {
-         function(cmp)
-            if cmp.snippet_active() then return cmp.snippet_forward() end
-            return cmp.select_next()
-         end,
-         'fallback',
-      },
-      ['<S-Tab>'] = {
-         function(cmp)
-            if cmp.snippet_active() then return cmp.snippet_backward() end
-            return cmp.select_prev()
-         end,
-         'fallback',
-      },
-      ['<Up>'] = { 'select_prev', 'fallback' },
-      ['<Down>'] = { 'select_next', 'fallback' },
-      ['<C-p>'] = { 'select_prev', 'fallback' },
-      ['<C-n>'] = { 'select_next', 'fallback' },
-      ['<C-space>'] = { 'show', 'show_documentation', 'hide_documentation' },
-      ['<C-e>'] = { 'hide' },
-   },
-   cmdline = { enabled = true },
-   appearance = { nerd_font_variant = "mono" },
-   completion = {
-      keyword = { range = 'full' },
-      list = {
-         selection = {
-            preselect = true,
-            auto_insert = true
-         }
-      },
-      ghost_text = { enabled = true },
-      menu = { auto_show = true },
-      documentation = {
-         auto_show = true,
-         auto_show_delay_ms = 0,
-      },
-   },
-   sources = { default = { "lsp", "path", "snippets", "buffer" } },
-   snippets = {
-      expand = function(snippet)
-         require("luasnip").lsp_expand(snippet)
-      end,
-   },
-})
-vim.lsp.config["*"] = {
-   capabilities = require("blink.cmp").get_lsp_capabilities(),
-}
-
-vim.lsp.config("lua_ls", {
-   settings = {
-      Lua = {
-         diagnostics = { globals = { "vim" } },
-         telemetry = { enable = false },
-      },
-   },
-})
 require("snacks").setup({
    bigfile = { enabled = true },
    dashboard = { enabled = false },
    explorer = { enabled = true },
    indent = { enabled = true },
    input = { enabled = true },
-   notify = {enabled = true},
-   picker = { enabled = true },
+   notify = { enabled = true },
+   picker = { enabled = true, ui_select=true, },
    quickfile = { enabled = true },
    scope = { enabled = true },
    statuscolumn = { enabled = true },
    words = { enabled = true },
-   icons = {
-      enabled = true,
-      style = "web-devicons",
-   },
+   icons = { enabled = true, style = "web-devicons" },
 })
 
-vim.keymap.set({ "n", "t" }, "<C-_>", function()
-   require("snacks").terminal.toggle()
-end, { desc = "Toggle terminal" })
-
-vim.keymap.set({ "n", "t" }, "<C-/>", function()
-   require("snacks").terminal.toggle()
-end, { desc = "Toggle terminal" })
-
-vim.keymap.set("n", "<leader>gg", function()
-   require("snacks").lazygit()
-end, { desc = "Lazygit" })
+vim.keymap.set({ "n", "t" }, "<C-_>", function() require("snacks").terminal.toggle() end, { desc = "Toggle terminal" })
+vim.keymap.set({ "n", "t" }, "<C-/>", function() require("snacks").terminal.toggle() end, { desc = "Toggle terminal" })
+vim.keymap.set("n", "<leader>gg", function() require("snacks").lazygit() end, { desc = "Lazygit" })
 
 require("which-key").setup({})
 require("which-key").add({
-   { "<leader>f", group = "Find" },
-   { "<leader>g", group = "Go to" },
-   { "<leader>h", group = "Git hunks" },
-   { "<leader>b", group = "Buffers" },
-   { "<leader>s", group = "Splits" },
-   { "<leader>d", group = "Diagnostics" },
-   { "<leader>t", group = "Toggle" },
-   { "<leader>o", group = "Organize" },
-   { "<leader>c", group = "Code/LSP" },
-   { "<leader>x", group = "Trouble/Diagnostics" },
-   { "]",         group = "Next" },
-   { "[",         group = "Prev" },
+   { "<leader>f", group = "Find" }, { "<leader>g", group = "Go to" }, { "<leader>h", group = "Git hunks" },
+   { "<leader>b", group = "Buffers" }, { "<leader>s", group = "Splits" }, { "<leader>d", group = "Diagnostics" },
+   { "<leader>t", group = "Toggle" }, { "<leader>o", group = "Organize" }, { "<leader>c", group = "Code/LSP" },
+   { "<leader>x", group = "Trouble/Diagnostics" }, { "]", group = "Next" }, { "[", group = "Prev" },
 })
 
 vim.keymap.set("n", "s", function() require("flash").jump() end, { desc = "Flash" })
@@ -567,65 +412,44 @@ vim.keymap.set("i", "<C-s>", "<cmd>write<CR><Esc>", { desc = "Save file" })
 require("bufferline").setup {}
 require("lualine").setup {}
 require("nvim-autopairs").setup {}
+
 require("project").setup({
-   patterns = {
-      ".git",
-      ".github",
-      "package.json",
-      "Cargo.toml",
-      "go.mod",
-      "pyproject.toml",
-      "*.sln",
-      ".nvim.lua",
-   },
+   patterns = { ".git", ".github", "package.json", "Cargo.toml", "go.mod", "pyproject.toml", "*.sln", ".nvim.lua" },
    silent_chdir = true,
    scope_chdir = "global",
-   snacks = {
-      enabled = true,
-      opts = {
-         sort = "newest",
-         title = "Projects",
-         layout = "select",
-         show = "paths",
-      },
-   },
-   fzf_lua = {
-      enabled = true,
-      sort = "newest",
-   },
+   snacks = { enabled = true, opts = { sort = "newest", title = "Projects", layout = "select", show = "paths" } },
+   fzf_lua = { enabled = true, sort = "newest" },
 })
+
 require("rose-pine").setup({
-   styles = {
-      italic = false,
-   },
-   highlight_groups = {
-      Comment = { italic = true },
-   }
+   styles = { italic = false },
+   highlight_groups = { Comment = { italic = true } }
 })
 require("themery").setup({
-  themes = vim.fn.getcompletion('', 'color'),
-  livePreview = true,
+   themes = vim.fn.getcompletion('', 'color'),
+   livePreview = true,
 })
 vim.cmd.colorscheme("rose-pine")
-if vim.g.neovide then
-   vim.o.guifont = "FiraCode Nerd Font"
-   vim.api.nvim_set_keymap('n', '<F11>', ":let g:neovide_fullscreen = !g:neovide_fullscreen<CR>", {})
-end
 
 require("noice").setup({
-  lsp = {
-    override = {
-      ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-      ["vim.lsp.util.stylize_markdown"] = true,
-      ["cmp.entry.get_documentation"] = true, -- requires hrsh7th/nvim-cmp
-    },
-  },
-  -- you can enable a preset for easier configuration
-  presets = {
-    bottom_search = true, -- use a classic bottom cmdline for search
-    command_palette = true, -- position the cmdline and popupmenu together
-    long_message_to_split = true, -- long messages will be sent to a split
-    inc_rename = false, -- enables an input dialog for inc-rename.nvim
-    lsp_doc_border = false, -- add a border to hover docs and signature help
-  },
+   lsp = {
+      override = {
+         ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+         ["vim.lsp.util.stylize_markdown"] = true,
+         ["cmp.entry.get_documentation"] = true,
+      },
+   },
+   presets = {
+      bottom_search = true,
+      command_palette = true,
+      long_message_to_split = true,
+      inc_rename = false,
+      lsp_doc_border = false,
+   },
+   routes = {
+      {
+         filter = { event = "msg_show", any = { { find = "written" }, { find = "trailing" } } },
+         opts = { skip = true },
+      },
+   },
 })
