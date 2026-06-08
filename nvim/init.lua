@@ -93,9 +93,6 @@ vim.keymap.set("i", "<right>", "<nop>")
 -- let the left and right arrow be usefull: they can change buffers
 vim.keymap.set("n", "<left>", ":bp<cr>")
 vim.keymap.set("n", "<right>", ":bn<cr>")
--- make j and k move by visual line, not actual line, when text is soft-wrapped
-vim.keymap.set("n", "j", "gj")
-vim.keymap.set("n", "k", "gk")
 
 vim.keymap.set("n", "n", "nzzzv", { desc = "Next search result (centered)" })
 vim.keymap.set("n", "N", "Nzzzv", { desc = "Previous search result (centered)" })
@@ -108,7 +105,7 @@ vim.keymap.set("n", "<leader>bd", ":bd<CR>", { desc = "Close buffer" })
 vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })
 vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Move to bottom window" })
 vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Move to top window" })
-vim.keymap.set("n", "<C-l>", "<W-w>l", { desc = "Move to right window" })
+vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Move to right window" })
 vim.keymap.set("n", "<leader>sv", ":vsplit<CR>", { desc = "Split window vertically" })
 vim.keymap.set("n", "<leader>sh", ":split<CR>", { desc = "Split window horizontally" })
 vim.keymap.set("n", "<C-Up>", ":resize +2<CR>", { desc = "Increase window height" })
@@ -213,8 +210,8 @@ vim.pack.add({
 	"https://github.com/mcauley-penney/techbase.nvim",
 	"https://github.com/wincent/base16-nvim",
 	"https://github.com/ray-x/lsp_signature.nvim",
+   "https://github.com/christoomey/vim-tmux-navigator",
 })
-
 local setup_treesitter = function()
 	local treesitter = require("nvim-treesitter")
 	treesitter.setup({})
@@ -597,21 +594,7 @@ require("project").setup({
 --    styles = { italic = false },
 --    highlight_groups = { Comment = { italic = true } }
 -- })
-vim.cmd([[colorscheme gruvbox-dark-hard]])
-vim.o.background = "dark"
-vim.cmd([[hi Normal ctermbg=NONE]])
--- Less visible window separator
-vim.api.nvim_set_hl(0, "WinSeparator", { fg = 1250067 })
--- Make comments more prominent -- they are important.
-local bools = vim.api.nvim_get_hl(0, { name = "Boolean" })
-vim.api.nvim_set_hl(0, "Comment", bools)
--- Make it clearly visible which argument we're at.
-local marked = vim.api.nvim_get_hl(0, { name = "PMenu" })
-vim.api.nvim_set_hl(
-	0,
-	"LspSignatureActiveParameter",
-	{ fg = marked.fg, bg = marked.bg, ctermfg = marked.ctermfg, ctermbg = marked.ctermbg, bold = true }
-)
+-- vim.cmd([[colorscheme gruvbox-dark-hard]])
 require("themery").setup({
 	themes = vim.fn.getcompletion("", "color"),
 	livePreview = true,
