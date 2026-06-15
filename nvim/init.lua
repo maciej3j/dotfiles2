@@ -11,8 +11,8 @@ vim.opt.number = true -- line number
 vim.opt.relativenumber = true -- relative line numbers
 vim.opt.cursorline = true -- highlight current line
 vim.opt.wrap = false -- do not wrap lines by default
-vim.opt.scrolloff = 2 -- keep 10 lines above/below cursor
-vim.opt.sidescrolloff = 2 -- keep 10 lines to left/right of cursor
+vim.opt.scrolloff = 8 -- keep 10 lines above/below cursor
+vim.opt.sidescrolloff = 4 -- keep 10 lines to left/right of cursor
 vim.opt.tabstop = 3 -- tabwidth
 vim.opt.shiftwidth = 3 -- indent width
 vim.opt.softtabstop = 3 -- soft tab stop not tabs on tab/backspace
@@ -98,6 +98,7 @@ vim.keymap.set("n", "n", "nzzzv", { desc = "Next search result (centered)" })
 vim.keymap.set("n", "N", "Nzzzv", { desc = "Previous search result (centered)" })
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Half page down (centered)" })
 vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Half page up (centered)" })
+vim.keymap.set("n", "<leader><leader>", "<C-^>", {desc = "Last buffer"})
 vim.keymap.set("x", "<leader>p", '"_dP', { desc = "Paste without yanking" })
 vim.keymap.set("n", "<S-l>", ":bnext<CR>", { desc = "Next buffer" })
 vim.keymap.set("n", "<S-h>", ":bprevious<CR>", { desc = "Previous buffer" })
@@ -211,6 +212,7 @@ vim.pack.add({
 	"https://github.com/wincent/base16-nvim",
 	"https://github.com/ray-x/lsp_signature.nvim",
    "https://github.com/christoomey/vim-tmux-navigator",
+   "https://github.com/folke/tokyonight.nvim",
 })
 local setup_treesitter = function()
 	local treesitter = require("nvim-treesitter")
