@@ -137,6 +137,10 @@
       "rev": "ad9ede6a9cddf16cedbd31b8932d6dcdee9b716e",
       "src": "https://github.com/folke/snacks.nvim"
     },
+    "swenv.nvim": {
+      "rev": "4157de2619ec2e5c61c103fb6517845a0e04e558",
+      "src": "https://github.com/AckslD/swenv.nvim"
+    },
     "techbase.nvim": {
       "rev": "fc4e039e370043d7ae7203c9a1dbbda76f683740",
       "src": "https://github.com/mcauley-penney/techbase.nvim"
