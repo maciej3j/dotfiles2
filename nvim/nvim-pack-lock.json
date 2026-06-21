@@ -112,6 +112,10 @@
       "rev": "c72328a5494b4502947a022fe69c0c47e53b6aa6",
       "src": "https://github.com/nvim-tree/nvim-web-devicons"
     },
+    "opencode.nvim": {
+      "rev": "6ab7d2fa0167ee81f1e22af712aaaaea4b64488a",
+      "src": "https://github.com/sudo-tee/opencode.nvim"
+    },
     "oxocarbon.nvim": {
       "rev": "a7ba74849a00546a311f8c146320b433900393e7",
       "src": "https://github.com/nyoom-engineering/oxocarbon.nvim"
