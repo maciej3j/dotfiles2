@@ -1,6 +1,9 @@
 require("vim._core.ui2").enable({
 	enable = true,
 })
+vim.env.PIP_PROXY = "http://wsl-proxy:3129"
+vim.env.PIP_INDEX_URL = "https://pypi.org/simple/"
+vim.env.PIP_EXTRA_INDEX_URL = ""
 vim.opt.termguicolors = true
 vim.opt.bg = "dark"
 vim.opt.number = true -- line number
