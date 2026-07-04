@@ -3,67 +3,67 @@ require("vim._core.ui2").enable({
 })
 vim.opt.termguicolors = true
 vim.opt.bg = "dark"
-vim.opt.number = true -- line number
-vim.opt.relativenumber = true -- relative line numbers
-vim.opt.cursorline = true -- highlight current line
-vim.opt.wrap = false -- do not wrap lines by default
+vim.opt.number = true
+vim.opt.relativenumber = true
+vim.opt.cursorline = true
+vim.opt.wrap = false
 vim.opt.scrolloff = 8
 vim.opt.sidescrolloff = 8
-vim.opt.tabstop = 4 -- tabwidth
-vim.opt.shiftwidth = 4 -- indent width
-vim.opt.softtabstop = 4 -- soft tab stop not tabs on tab/backspace
-vim.opt.expandtab = true -- use spaces instead of tabs
-vim.opt.smartindent = true -- smart auto-indent
-vim.opt.autoindent = true -- copy indent from current line
-vim.opt.ignorecase = true -- case insensitive search
-vim.opt.smartcase = true -- case sensitive if uppercase in string
-vim.opt.hlsearch = true -- highlight search matches
-vim.opt.incsearch = true -- show matches as you type
-vim.opt.showmatch = true -- highlights matching brackets
-vim.opt.cmdheight = 1 -- single line command line
-vim.opt.completeopt = "menuone,noinsert,noselect" -- completion options
-vim.opt.showmode = false -- do not show the mode, instead have it in statusline
-vim.opt.pumheight = 10 -- popup menu height
-vim.opt.pumblend = 10 -- popup menu transparency
-vim.opt.winblend = 0 -- floating window transparency
-vim.opt.conceallevel = 0 -- do not hide markup
-vim.opt.concealcursor = "" -- do not hide cursorline in markup
-vim.opt.synmaxcol = 300 -- syntax highlighting limit
-vim.opt.fillchars = { eob = " " } -- hide "~" on empty lines
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.softtabstop = 4
+vim.opt.expandtab = true
+vim.opt.smartindent = true
+vim.opt.autoindent = true
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+vim.opt.hlsearch = true
+vim.opt.incsearch = true
+vim.opt.showmatch = true
+vim.opt.cmdheight = 1
+vim.opt.completeopt = "menuone,noinsert,noselect"
+vim.opt.showmode = false
+vim.opt.pumheight = 10
+vim.opt.pumblend = 10
+vim.opt.winblend = 0
+vim.opt.conceallevel = 0
+vim.opt.concealcursor = ""
+vim.opt.synmaxcol = 300
+vim.opt.fillchars = { eob = " " }
 
 local undodir = vim.fn.expand("~/.vim/undodir")
-if vim.fn.isdirectory(undodir) == 0 then -- create undodir if nonexistent
+if vim.fn.isdirectory(undodir) == 0 then
 	vim.fn.mkdir(undodir, "p")
 end
 
-vim.opt.backup = false -- do not create a backup file
-vim.opt.writebackup = false -- do not write to a backup file
-vim.opt.swapfile = false -- do not create a swapfile
-vim.opt.undofile = true -- do create an undo file
-vim.opt.undodir = undodir -- set the undo directory
-vim.opt.updatetime = 300 -- faster completion
-vim.opt.timeoutlen = 500 -- timeout duration
-vim.opt.ttimeoutlen = 50 -- key code timeout
-vim.opt.autoread = true -- auto-reload changes if outside of neovim
-vim.opt.autowrite = false -- do not auto-save
-vim.opt.hidden = true -- allow hidden buffers
-vim.opt.errorbells = false -- no error sounds
-vim.opt.backspace = "indent,eol,start" -- better backspace behaviour
-vim.opt.autochdir = false -- do not autochange directories
-vim.opt.iskeyword:append("-") -- include - in words
-vim.opt.path:append("**") -- include subdirs in search
-vim.opt.selection = "inclusive" -- include last char in selection
-vim.opt.mouse = "a" -- enable mouse support
-vim.opt.clipboard:append("unnamedplus") -- use system clipboard
-vim.opt.modifiable = true -- allow buffer modifications
-vim.opt.encoding = "utf-8" -- set encoding
-vim.opt.foldmethod = "expr" -- use expression for folding
-vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()" -- use treesitter for folding
-vim.opt.foldlevel = 99 -- start with all folds open
-vim.opt.splitbelow = true -- horizontal splits go below
-vim.opt.splitright = true -- vertical splits go right
-vim.opt.wildmenu = true -- tab completion
-vim.opt.wildmode = "longest:full,full" -- complete longest common match, full completion list, cycle through with Tab
+vim.opt.backup = false
+vim.opt.writebackup = false
+vim.opt.swapfile = false
+vim.opt.undofile = true
+vim.opt.undodir = undodir
+vim.opt.updatetime = 300
+vim.opt.timeoutlen = 500
+vim.opt.ttimeoutlen = 50
+vim.opt.autoread = true
+vim.opt.autowrite = false
+vim.opt.hidden = true
+vim.opt.errorbells = false
+vim.opt.backspace = "indent,eol,start"
+vim.opt.autochdir = false
+vim.opt.iskeyword:append("-")
+vim.opt.path:append("**")
+vim.opt.selection = "inclusive"
+vim.opt.mouse = "a"
+vim.opt.clipboard:append("unnamedplus")
+vim.opt.modifiable = true
+vim.opt.encoding = "utf-8"
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.foldlevel = 99
+vim.opt.splitbelow = true
+vim.opt.splitright = true
+vim.opt.wildmenu = true
+vim.opt.wildmode = "longest:full,full"
 vim.opt.diffopt:append("iwhite")
 vim.diagnostic.config({ virtual_text = true, virtual_lines = false })
 vim.opt.colorcolumn = "80"
@@ -79,14 +79,12 @@ vim.keymap.set("n", "k", function()
 	return vim.v.count == 0 and "gk" or "k"
 end, { expr = true, silent = true, desc = "Up (wrap-aware)" })
 
--- force yourself to use the home row
 vim.keymap.set("n", "<up>", "<nop>")
 vim.keymap.set("n", "<down>", "<nop>")
 vim.keymap.set("i", "<up>", "<nop>")
 vim.keymap.set("i", "<down>", "<nop>")
 vim.keymap.set("i", "<left>", "<nop>")
 vim.keymap.set("i", "<right>", "<nop>")
--- let the left and right arrow be usefull: they can change buffers
 vim.keymap.set("n", "<left>", ":bp<cr>")
 vim.keymap.set("n", "<right>", ":bn<cr>")
 
@@ -170,11 +168,10 @@ vim.api.nvim_create_autocmd("FileType", {
 	end,
 })
 
--- Native Package Array Loader
 vim.pack.add({
 	"https://github.com/windwp/nvim-autopairs",
 	"https://www.github.com/lewis6991/gitsigns.nvim",
-	-- "https://github.com/akinsho/bufferline.nvim",
+	"https://github.com/akinsho/bufferline.nvim",
 	"https://github.com/nvim-lualine/lualine.nvim",
 	"https://github.com/MagicDuck/grug-far.nvim",
 	{
@@ -207,7 +204,6 @@ vim.pack.add({
 	"https://github.com/nvim-lua/plenary.nvim",
 	"https://github.com/mikavilpas/yazi.nvim",
 	"https://github.com/rose-pine/neovim",
-	"https://github.com/zaldih/themery.nvim",
 	"https://github.com/ellisonleao/gruvbox.nvim",
 	"https://github.com/rebelot/kanagawa.nvim",
 	"https://github.com/nyoom-engineering/oxocarbon.nvim",
@@ -218,6 +214,7 @@ vim.pack.add({
 	"https://github.com/folke/tokyonight.nvim",
 	"https://github.com/AckslD/swenv.nvim",
 	"https://github.com/sudo-tee/opencode.nvim",
+	"https://github.com/catppuccin/nvim",
 })
 
 local setup_treesitter = function()
@@ -333,7 +330,6 @@ vim.keymap.set(
 )
 vim.keymap.set("n", "<leader>xL", "<cmd>Trouble loclist toggle<cr>", { desc = "Location List (Trouble)" })
 vim.keymap.set("n", "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", { desc = "Quickfix List (Trouble)" })
-vim.keymap.set("n", "<leader>tc", "<cmd>Themery<cr>", { desc = "Open Themery" })
 vim.keymap.set("n", "<leader>cv", function()
 	require("swenv.api").pick_venv()
 end, { desc = "Pick Python venv" })
@@ -413,7 +409,6 @@ require("mason-lspconfig").setup({
 	automatic_installation = true,
 	handlers = {
 		function(server_name)
-			-- Dynamically maps blink's capabilities to servers as Mason provisions them
 			local capabilities = require("blink.cmp").get_lsp_capabilities()
 			require("lspconfig")[server_name].setup({
 				capabilities = capabilities,
@@ -447,8 +442,8 @@ require("lsp_signature").setup({
 	floating_window_above_cur_line = true,
 	close_timeout = 4000,
 	hi_parameter = "LspSignatureActiveParameter",
-	toggle_key = "<C-k>", -- toggle in insert mode
-	select_signature_key = "<M-n>", -- cycle overloads
+	toggle_key = "<C-k>",
+	select_signature_key = "<M-n>",
 })
 vim.keymap.set("n", "<leader>ck", function()
 	require("lsp_signature").toggle_float_win()
@@ -541,7 +536,7 @@ require("snacks").setup({
 	explorer = { enabled = true },
 	indent = { enabled = true },
 	input = { enabled = true },
-	notify = { enabled = true },
+	notifier = { enabled = true },
 	picker = { enabled = true, ui_select = true },
 	quickfile = { enabled = true },
 	scope = { enabled = true },
@@ -580,8 +575,8 @@ vim.keymap.set("n", "s", function()
 	require("flash").jump()
 end, { desc = "Flash" })
 vim.keymap.set("i", "<C-s>", "<cmd>write<CR><Esc>", { desc = "Save file" })
--- require("bufferline").setup({})
-require("lualine").setup({})
+require("bufferline").setup({})
+require("lualine").setup({ options = { theme = "auto" } })
 require("nvim-autopairs").setup({})
 
 require("project").setup({
@@ -591,15 +586,29 @@ require("project").setup({
 	snacks = { enabled = true, opts = { sort = "newest", title = "Projects", layout = "select", show = "paths" } },
 })
 
--- require("rose-pine").setup({
---    styles = { italic = false },
---    highlight_groups = { Comment = { italic = true } }
--- })
--- vim.cmd([[colorscheme gruvbox-dark-hard]])
-require("themery").setup({
-	themes = vim.fn.getcompletion("", "color"),
-	livePreview = true,
+require("rose-pine").setup({
+	styles = { italic = false },
+	highlight_groups = { Comment = { italic = true } },
 })
+
+require("catppuccin").setup({
+	flavour = "mocha",
+	transparent_background = false,
+	styles = { italic = false },
+	integrations = {
+		blink_cmp = true,
+		gitsigns = true,
+		lsp_trouble = true,
+		mason = true,
+		snacks = true,
+		treesitter = true,
+		which_key = true,
+		bufferline = true,
+		lualine = true,
+	},
+})
+vim.cmd.colorscheme("catppuccin-mocha")
+
 require("opencode").setup({
 	keymap_prefix = "<leader>o",
 	opencode_executable = "opencode",
@@ -629,5 +638,5 @@ vim.keymap.set({ "n", "x" }, "<leader>oa", function()
 end, { desc = "Zadaj pytanie OpenCode (z kontekstem kodu)" })
 vim.lsp.inlay_hint.enable(true)
 vim.keymap.set("n", "<leader>th", function()
-    vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+	vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
 end, { desc = "Toggle inlay hints" })
