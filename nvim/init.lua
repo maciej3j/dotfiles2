@@ -215,6 +215,10 @@ vim.pack.add({
 	"https://github.com/AckslD/swenv.nvim",
 	"https://github.com/sudo-tee/opencode.nvim",
 	"https://github.com/catppuccin/nvim",
+	"https://github.com/stevearc/conform.nvim",
+	"https://github.com/echasnovski/mini.nvim",
+	"https://github.com/folke/todo-comments.nvim",
+	"https://github.com/folke/persistence.nvim",
 })
 
 local setup_treesitter = function()
@@ -429,6 +433,35 @@ require("mason-lspconfig").setup({
 	},
 })
 
+require("conform").setup({
+	formatters_by_ft = {
+		lua = { "stylua" },
+		python = { "ruff_format" },
+		rust = { "rustfmt" },
+		javascript = { "prettier" },
+	},
+	format_on_save = {
+		timeout_ms = 500,
+		lsp_fallback = true,
+	},
+})
+vim.opt.cmdheight = 0
+
+-- Auto save on focus lost
+vim.api.nvim_create_autocmd({ "FocusLost", "BufLeave" }, {
+	callback = function()
+		if vim.bo.buftype == "" and vim.bo.modifiable then
+			vim.cmd("silent! write")
+		end
+	end,
+})
+require("mini.ai").setup()
+require("mini.surround").setup()
+require("todo-comments").setup()
+vim.keymap.set("n", "<leader>ft", "<cmd>TodoTelescope<cr>")
+vim.keymap.set("n", "<leader>fm", function()
+	require("mini.files").open()
+end)
 require("lsp_signature").setup({
 	bind = true,
 	handler_opts = {
@@ -575,7 +608,11 @@ vim.keymap.set("n", "s", function()
 	require("flash").jump()
 end, { desc = "Flash" })
 vim.keymap.set("i", "<C-s>", "<cmd>write<CR><Esc>", { desc = "Save file" })
-require("bufferline").setup({})
+require("bufferline").setup({
+	options = {
+		always_show_bufferline = false,
+	},
+})
 require("lualine").setup({ options = { theme = "auto" } })
 require("nvim-autopairs").setup({})
 
