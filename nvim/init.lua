@@ -71,7 +71,6 @@ vim.api.nvim_create_autocmd("Filetype", { pattern = "rust", command = "set color
 vim.opt.vb = true
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
-
 vim.keymap.set("n", "j", function()
 	return vim.v.count == 0 and "gj" or "j"
 end, { expr = true, silent = true, desc = "Down (wrap-aware)" })
@@ -87,6 +86,9 @@ vim.keymap.set("i", "<left>", "<nop>")
 vim.keymap.set("i", "<right>", "<nop>")
 vim.keymap.set("n", "<left>", ":bp<cr>")
 vim.keymap.set("n", "<right>", ":bn<cr>")
+
+vim.api.nvim_create_user_command("W", "w", {})
+vim.keymap.set("n", "<leader>cc", ":e $MYVIMRC<CR>")
 
 vim.keymap.set("n", "n", "nzzzv", { desc = "Next search result (centered)" })
 vim.keymap.set("n", "N", "Nzzzv", { desc = "Previous search result (centered)" })
@@ -129,15 +131,6 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	group = augroup,
 	callback = function()
 		vim.hl.on_yank()
-	end,
-})
-vim.api.nvim_create_autocmd("FileType", {
-	group = augroup,
-	pattern = "python",
-	callback = function()
-		vim.opt_local.tabstop = 4
-		vim.opt_local.shiftwidth = 4
-		vim.opt_local.softtabstop = 4
 	end,
 })
 
@@ -445,9 +438,7 @@ require("conform").setup({
 		lsp_fallback = true,
 	},
 })
-vim.opt.cmdheight = 0
 
--- Auto save on focus lost
 vim.api.nvim_create_autocmd({ "FocusLost", "BufLeave" }, {
 	callback = function()
 		if vim.bo.buftype == "" and vim.bo.modifiable then
@@ -558,11 +549,6 @@ map("<leader>cf", function()
 	end, 50)
 end, "Organize imports & format")
 
-vim.keymap.set("n", "<leader>q", function()
-	vim.diagnostic.setloclist({ open = true })
-end, { desc = "Open diagnostic list" })
-vim.keymap.set("n", "<leader>dl", vim.diagnostic.open_float, { desc = "Show line diagnostics" })
-
 require("snacks").setup({
 	bigfile = { enabled = true },
 	dashboard = { enabled = false },
@@ -613,7 +599,60 @@ require("bufferline").setup({
 		always_show_bufferline = false,
 	},
 })
-require("lualine").setup({ options = { theme = "auto" } })
+require("lualine").setup({
+	options = {
+		icons_enabled = false,
+		theme = "auto",
+		component_separators = { left = "", right = "" },
+		section_separators = { left = "", right = "" },
+		disabled_filetypes = {
+			statusline = {},
+			winbar = {},
+		},
+		ignore_focus = {},
+		always_divide_middle = true,
+		always_show_tabline = true,
+		globalstatus = false,
+		refresh = {
+			statusline = 1000,
+			tabline = 1000,
+			winbar = 1000,
+			refresh_time = 16, -- ~60fps
+			events = {
+				"WinEnter",
+				"BufEnter",
+				"BufWritePost",
+				"SessionLoadPost",
+				"FileChangedShellPost",
+				"VimResized",
+				"Filetype",
+				"CursorMoved",
+				"CursorMovedI",
+				"ModeChanged",
+			},
+		},
+	},
+	sections = {
+		lualine_a = { "mode" },
+		lualine_b = { "branch", "diagnostics" },
+		lualine_c = { "filename" },
+		lualine_x = { "lsp_status" },
+		lualine_y = { "progress" },
+		lualine_z = { "location" },
+	},
+	inactive_sections = {
+		lualine_a = {},
+		lualine_b = {},
+		lualine_c = { "filename" },
+		lualine_x = { "location" },
+		lualine_y = {},
+		lualine_z = {},
+	},
+	tabline = {},
+	winbar = {},
+	inactive_winbar = {},
+	extensions = {},
+})
 require("nvim-autopairs").setup({})
 
 require("project").setup({
