@@ -235,6 +235,7 @@ local setup_treesitter = function()
 		"vue",
 		"svelte",
 		"bash",
+		"typescript",
 	}
 
 	local config = require("nvim-treesitter.config")
@@ -432,6 +433,12 @@ require("conform").setup({
 		python = { "ruff_format" },
 		rust = { "rustfmt" },
 		javascript = { "prettier" },
+		typescript = { "prettier" },
+		typescriptreact = { "prettier" },
+		javascriptreact = { "prettier" },
+		html = { "prettier" },
+		css = { "prettier" },
+		scss = { "prettier" },
 	},
 	format_on_save = {
 		timeout_ms = 500,
@@ -509,9 +516,7 @@ map("gS", function()
 	vim.cmd("vsplit")
 	vim.lsp.buf.definition()
 end, "Go to definition (split)")
-map("<leader>ca", function()
-	require("snacks").picker.lsp_code_actions()
-end, "Code action")
+map("<leader>ca", vim.lsp.buf.code_action, "Code action")
 map("<leader>rn", vim.lsp.buf.rename, "Rename symbol")
 map("<leader>D", function()
 	vim.diagnostic.open_float({ scope = "line" })
