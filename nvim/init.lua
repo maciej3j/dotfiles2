@@ -712,7 +712,7 @@ vim.keymap.set("n", "<leader>op", "<cmd>OpencodeModelPicker<cr>", { desc = "Wyb√
 vim.keymap.set({ "n", "x" }, "<leader>oa", function()
 	require("opencode").quick_chat()
 end, { desc = "Zadaj pytanie OpenCode (z kontekstem kodu)" })
-vim.lsp.inlay_hint.enable(true)
+-- vim.lsp.inlay_hint.enable(true)
 vim.keymap.set("n", "<leader>th", function()
 	vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
 end, { desc = "Toggle inlay hints" })
