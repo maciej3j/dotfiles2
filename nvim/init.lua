@@ -65,7 +65,7 @@ vim.opt.splitright = true
 vim.opt.wildmenu = true
 vim.opt.wildmode = "longest:full,full"
 vim.opt.diffopt:append("iwhite")
-vim.diagnostic.config({ virtual_text = true, virtual_lines = false })
+vim.diagnostic.config({ virtual_text = true, virtual_lines = false, update_in_insert = true })
 vim.opt.colorcolumn = "80"
 vim.api.nvim_create_autocmd("Filetype", { pattern = "rust", command = "set colorcolumn=100" })
 vim.opt.vb = true
@@ -206,7 +206,6 @@ vim.pack.add({
 	"https://github.com/christoomey/vim-tmux-navigator",
 	"https://github.com/folke/tokyonight.nvim",
 	"https://github.com/AckslD/swenv.nvim",
-	"https://github.com/sudo-tee/opencode.nvim",
 	"https://github.com/catppuccin/nvim",
 	"https://github.com/stevearc/conform.nvim",
 	"https://github.com/echasnovski/mini.nvim",
@@ -533,18 +532,6 @@ end, "Prev diagnostic")
 map("<leader>fr", function()
 	require("grug-far").open()
 end, "Search and Replace")
-map("<leader>fR", function()
-	require("snacks").picker.lsp_references()
-end, "LSP references")
-map("<leader>ft", function()
-	require("snacks").picker.lsp_typedefinitions()
-end, "LSP type defs")
-map("<leader>fs", function()
-	require("snacks").picker.lsp_symbols()
-end, "LSP document symbols")
-map("<leader>fi", function()
-	require("snacks").picker.lsp_implementations()
-end, "LSP implementations")
 vim.keymap.set("n", "<leader>fp", "<cmd>ProjectSnacks<cr>", { desc = "Projects" })
 vim.keymap.set("n", "<leader>-", "<cmd>Yazi toggle<cr>", { desc = "Resume Yazi" })
 map("<leader>cf", function()
@@ -564,6 +551,7 @@ require("snacks").setup({
 	picker = { enabled = true, ui_select = true },
 	quickfile = { enabled = true },
 	scope = { enabled = true },
+	scroll = { enabled = true },
 	statuscolumn = { enabled = true },
 	words = { enabled = true },
 	icons = { enabled = true, style = "web-devicons" },
@@ -579,6 +567,55 @@ vim.keymap.set("n", "<leader>gg", function()
 	require("snacks").lazygit()
 end, { desc = "Lazygit" })
 
+require("gitsigns").setup({
+	signs = {
+		add = { text = "┃" },
+		change = { text = "┃" },
+		delete = { text = "_" },
+		topdelete = { text = "‾" },
+		changedelete = { text = "~" },
+		untracked = { text = "┆" },
+	},
+	signs_staged = {
+		add = { text = "┃" },
+		change = { text = "┃" },
+		delete = { text = "_" },
+		topdelete = { text = "‾" },
+		changedelete = { text = "~" },
+		untracked = { text = "┆" },
+	},
+	signs_staged_enable = true,
+	signcolumn = true, -- Toggle with `:Gitsigns toggle_signs`
+	numhl = false, -- Toggle with `:Gitsigns toggle_numhl`
+	linehl = false, -- Toggle with `:Gitsigns toggle_linehl`
+	word_diff = false, -- Toggle with `:Gitsigns toggle_word_diff`
+	watch_gitdir = {
+		follow_files = true,
+	},
+	auto_attach = true,
+	attach_to_untracked = false,
+	current_line_blame = true, -- Toggle with `:Gitsigns toggle_current_line_blame`
+	current_line_blame_opts = {
+		virt_text = true,
+		virt_text_pos = "eol", -- 'eol' | 'overlay' | 'right_align'
+		delay = 1000,
+		ignore_whitespace = false,
+		virt_text_priority = 100,
+		use_focus = true,
+	},
+	current_line_blame_formatter = "<author>, <author_time:%R> - <summary>",
+	blame_formatter = nil, -- Use default
+	sign_priority = 6,
+	update_debounce = 100,
+	status_formatter = nil, -- Use default
+	max_file_length = 40000, -- Disable if file is longer than this (in lines)
+	preview_config = {
+		style = "minimal",
+		relative = "cursor",
+		row = 0,
+		col = 1,
+	},
+})
 require("which-key").setup({})
 require("which-key").add({
 	{ "<leader>f", group = "Find" },
@@ -688,35 +725,7 @@ require("catppuccin").setup({
 		lualine = true,
 	},
 })
-vim.cmd.colorscheme("catppuccin-mocha")
-
-require("opencode").setup({
-	keymap_prefix = "<leader>o",
-	opencode_executable = "opencode",
-	persist_state = true,
-	ui = {
-		picker = {
-			snacks_layout = {
-				layout = {
-					border = "rounded",
-					box = "vertical",
-				},
-			},
-		},
-	},
-})
-
-vim.keymap.set(
-	{ "n", "v" },
-	"<leader>oo",
-	"<cmd>OpencodeToggle<cr>",
-	{ desc = "Otwórz/Przełącz panel chatu OpenCode" }
-)
-vim.keymap.set("n", "<leader>ot", "<cmd>OpencodeToggleFocus<cr>", { desc = "Przełącz focus między kodem a chatem" })
-vim.keymap.set("n", "<leader>op", "<cmd>OpencodeModelPicker<cr>", { desc = "Wybór modelu AI" })
-vim.keymap.set({ "n", "x" }, "<leader>oa", function()
-	require("opencode").quick_chat()
-end, { desc = "Zadaj pytanie OpenCode (z kontekstem kodu)" })
+vim.cmd.colorscheme("gruvbox")
 -- vim.lsp.inlay_hint.enable(true)
 vim.keymap.set("n", "<leader>th", function()
 	vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
