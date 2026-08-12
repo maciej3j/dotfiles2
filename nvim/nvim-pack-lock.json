@@ -82,7 +82,7 @@
     },
     "mini.nvim": {
       "rev": "5849ef04c32a6a8e55957b946c0a275801d87530",
-      "src": "https://www.github.com/echasnovski/mini.nvim"
+      "src": "https://github.com/echasnovski/mini.nvim"
     },
     "neovim": {
       "rev": "6a961effd67f6130d36df6d1c05c48c739796dd2",
