@@ -1,7 +1,8 @@
 export ZDOTDIR="${ZDOTDIR:-$HOME/.config/zsh}"
 export ZSH="$HOME/.oh-my-zsh"
+export ZSH_CUSTOM="$ZSH/custom"
 ZSH_THEME="robbyrussell"
-plugins=(git zsh-autosuggestions fast-syntax-highlighting zsh-autocomplete python rust)
+plugins=(git zsh-autosuggestions fast-syntax-highlighting python rust)
 
 if [[ -r "$ZSH/oh-my-zsh.sh" ]]; then
   source "$ZSH/oh-my-zsh.sh"
