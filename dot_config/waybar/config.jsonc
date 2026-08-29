@@ -39,19 +39,22 @@
     "format-icons": {
       "default": ["", "", ""]
     },
-    "scroll-step": 5
+    "scroll-step": 5,
+    "on-click": "foot -e /bin/sh -c '$HOME/.local/bin/waybar-audio'"
   },
   "network": {
     "format-wifi": "  {signalStrength}%",
     "format-ethernet": "󰈀",
     "format-disconnected": "󰖪",
-    "tooltip-format-wifi": "{essid}\n{ipaddr}"
+    "tooltip-format-wifi": "{essid}\n{ipaddr}",
+    "on-click": "foot -e /bin/sh -c '$HOME/.local/bin/waybar-network'"
   },
   "bluetooth": {
     "format": "󰂯",
     "format-disabled": "󰂲",
     "format-connected": "󰂱 {num_connections}",
-    "tooltip-format": "{controller_alias}\n{device_enumerate}"
+    "tooltip-format": "{controller_alias}\n{device_enumerate}",
+    "on-click": "foot -e /bin/sh -c '$HOME/.local/bin/waybar-bluetooth'"
   },
   "battery": {
     "states": {
@@ -70,6 +73,6 @@
   "custom/lock": {
     "format": "",
     "tooltip": false,
-    "on-click": "hyprlock"
+    "on-click": "foot -e /bin/sh -c '$HOME/.local/bin/waybar-power'"
   }
 }

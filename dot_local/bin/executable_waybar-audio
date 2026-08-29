@@ -1,0 +1,22 @@
+#!/bin/sh
+
+if command -v pulsemixer >/dev/null 2>&1; then
+    exec pulsemixer
+fi
+
+while :; do
+    action=$(printf '%s\n' \
+        'Toggle mute' \
+        'Volume +5%' \
+        'Volume -5%' \
+        'Show audio status' \
+        'Close' | fzf --prompt='Audio > ' --height=10 --reverse)
+
+    case "$action" in
+        'Toggle mute') wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle ;;
+        'Volume +5%') wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+ ;;
+        'Volume -5%') wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- ;;
+        'Show audio status') wpctl status; printf '\nPress Enter to continue...'; read -r _ ;;
+        *) exit 0 ;;
+    esac
+done

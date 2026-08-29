@@ -1,0 +1,16 @@
+#!/bin/sh
+
+action=$(printf '%s\n' \
+    'Lock' \
+    'Suspend' \
+    'Log out' \
+    'Reboot' \
+    'Shut down' | fzf --prompt='Power > ' --height=10 --reverse)
+
+case "$action" in
+    'Lock') exec hyprlock ;;
+    'Suspend') loginctl suspend ;;
+    'Log out') hyprctl dispatch exit ;;
+    'Reboot') systemctl reboot ;;
+    'Shut down') systemctl poweroff ;;
+esac
