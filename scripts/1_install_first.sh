@@ -13,15 +13,17 @@ fi
 
 sudo -v
 sudo pacman -Syu --needed --noconfirm \
+  adwaita-icon-theme \
   base-devel \
-  chezmoi \
-  curl \
+  bat \
   bluez \
   bluez-utils \
-  adwaita-icon-theme \
   brightnessctl \
+  chezmoi \
+  curl \
   docker \
   docker-buildx \
+  eza \
   fd \
   foot \
   fuzzel \
@@ -155,4 +157,3 @@ fi
 #   systemctl --user enable --now pipewire.socket pipewire-pulse.socket wireplumber.service
 #   systemctl --user enable hyprpolkitagent.service
 # fi
-
