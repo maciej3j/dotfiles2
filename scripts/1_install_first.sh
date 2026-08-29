@@ -16,12 +16,6 @@ sudo pacman -Syu --needed --noconfirm \
   base-devel \
   chezmoi \
   curl \
-  fd \
-  fzf \
-  git \
-  go \
-  ripgrep \
-  sudo
   bluez \
   bluez-utils \
   adwaita-icon-theme \
@@ -36,6 +30,7 @@ sudo pacman -Syu --needed --noconfirm \
   greetd \
   greetd-tuigreet \
   git \
+  go \
   grim \
   hypridle \
   hyprland \
@@ -65,6 +60,7 @@ sudo pacman -Syu --needed --noconfirm \
   rustup \
   slurp \
   stylua \
+  sudo \
   thunar \
   ttf-dejavu \
   ttf-jetbrains-mono-nerd \
@@ -86,12 +82,16 @@ if ! rustup toolchain list | grep -q '^stable'; then
   rustup default stable
 fi
 
-build_dir=$(mktemp -d)
-trap 'rm -rf "$build_dir"' EXIT
-git clone --depth=1 https://aur.archlinux.org/yay.git "$build_dir/yay"
-pushd "$build_dir/yay" >/dev/null
-makepkg -si --needed --noconfirm
-popd >/dev/null
+if ! command -v yay >/dev/null 2>&1; then
+  build_dir=$(mktemp -d)
+  trap 'rm -rf "$build_dir"' EXIT
+
+  git clone --depth=1 https://aur.archlinux.org/yay.git "$build_dir/yay"
+
+  pushd "$build_dir/yay" >/dev/null
+  makepkg -si --needed --noconfirm
+  popd >/dev/null
+fi
 
 source_dir="${XDG_DATA_HOME:-$HOME/.local/share}/chezmoi"
 if [[ -d "$source_dir/.git" ]]; then
@@ -110,9 +110,30 @@ if [[ "$(getent passwd "$USER" | cut -d: -f7)" != "$(command -v zsh)" ]]; then
   chsh -s "$(command -v zsh)"
 fi
 
-git clone https://github.com/zsh-users/zsh-autosuggestions.git $ZSH_CUSTOM/plugins/zsh-autosuggestions
-git clone https://github.com/zdharma-continuum/fast-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/fast-syntax-highlighting
-git clone --depth 1 -- https://github.com/marlonrichert/zsh-autocomplete.git $ZSH_CUSTOM/plugins/zsh-autocomplete
+zsh_custom="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+
+clone_or_update() {
+  local repo="$1"
+  local dest="$2"
+
+  if [[ -d "$dest/.git" ]]; then
+    git -C "$dest" pull --ff-only
+  else
+    git clone --depth=1 "$repo" "$dest"
+  fi
+}
+
+clone_or_update \
+  https://github.com/zsh-users/zsh-autosuggestions.git \
+  "$zsh_custom/plugins/zsh-autosuggestions"
+
+clone_or_update \
+  https://github.com/zdharma-continuum/fast-syntax-highlighting.git \
+  "$zsh_custom/plugins/fast-syntax-highlighting"
+
+clone_or_update \
+  https://github.com/marlonrichert/zsh-autocomplete.git \
+  "$zsh_custom/plugins/zsh-autocomplete"
 
 tpm_dir="$HOME/.tmux/plugins/tpm"
 if [[ ! -d "$tpm_dir/.git" ]]; then
