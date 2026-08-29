@@ -7,6 +7,7 @@ output_file="$repo_root/output.txt"
 {
   while IFS= read -r -d '' path; do
     file="$repo_root/$path"
+    [[ -f "$file" ]] || continue
 
     printf '%s: ' "$path"
     if [[ ! -s "$file" ]] || grep -Iq . "$file"; then

@@ -5,7 +5,7 @@ action=$(printf '%s\n' \
     'Suspend' \
     'Log out' \
     'Reboot' \
-    'Shut down' | fzf --prompt='Power > ' --height=10 --reverse)
+    'Shut down' | fuzzel --dmenu --prompt='Power > ')
 
 case "$action" in
     'Lock') exec hyprlock ;;
