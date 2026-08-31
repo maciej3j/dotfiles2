@@ -17,6 +17,7 @@ sudo pacman -Syu --needed --noconfirm \
   base-devel \
   bat \
   brightnessctl \
+  bluetui \
   chezmoi \
   curl \
   docker \
@@ -68,6 +69,7 @@ sudo pacman -Syu --needed --noconfirm \
   waybar \
   wireplumber \
   wl-clipboard \
+  wlctl \
   xdg-desktop-portal-gtk \
   xdg-desktop-portal-hyprland \
   xorg-xwayland \

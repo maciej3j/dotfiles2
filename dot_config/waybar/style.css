@@ -80,10 +80,6 @@ window#waybar.empty #window {
   color: #a6e3a1;
 }
 
-#custom-lock {
-  color: #a6adc8;
-}
-
 tooltip {
   background: #1e1e2e;
   color: #cdd6f4;
