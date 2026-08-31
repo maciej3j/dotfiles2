@@ -38,4 +38,5 @@ vim.pack.add({
 	"https://github.com/echasnovski/mini.nvim",
 	"https://github.com/folke/todo-comments.nvim",
 	"https://github.com/folke/persistence.nvim",
+	"https://github.com/AckslD/swenv.nvim",
 })

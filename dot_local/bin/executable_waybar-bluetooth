@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if command -v bluetuith >/dev/null 2>&1; then
+    exec bluetuith
+fi
+
+exec bluetoothctl

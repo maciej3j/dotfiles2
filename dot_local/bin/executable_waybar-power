@@ -1,0 +1,16 @@
+#!/bin/sh
+
+action=$(printf '%s\n' \
+    'Lock' \
+    'Suspend' \
+    'Log out' \
+    'Reboot' \
+    'Shut down' | fuzzel --dmenu --prompt='Power > ')
+
+case "$action" in
+    'Lock') exec hyprlock ;;
+    'Suspend') loginctl suspend ;;
+    'Log out') hyprctl dispatch exit ;;
+    'Reboot') systemctl reboot ;;
+    'Shut down') systemctl poweroff ;;
+esac
