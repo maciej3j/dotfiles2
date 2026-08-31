@@ -29,6 +29,7 @@ sudo pacman -Syu --needed --noconfirm \
   fuzzel \
   fzf \
   firefox \
+  github-cli \
   greetd \
   greetd-tuigreet \
   git \
@@ -158,3 +159,5 @@ fi
 #   systemctl --user enable --now pipewire.socket pipewire-pulse.socket wireplumber.service
 #   systemctl --user enable hyprpolkitagent.service
 # fi
+
+gh auth login
