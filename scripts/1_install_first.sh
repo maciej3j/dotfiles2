@@ -80,19 +80,19 @@ sudo pacman -Syu --needed --noconfirm \
   yazi \
   zsh
 
+git config --global user.email "maciej.ko1444@gmail.com"
+git config --global user.name "Maciej Kowalski"
 if ! rustup toolchain list | grep -q '^stable'; then
   rustup default stable
 fi
 
 if ! command -v yay >/dev/null 2>&1; then
-  build_dir=$(mktemp -d)
-  trap 'rm -rf "$build_dir"' EXIT
+  git clone --depth=1 https://aur.archlinux.org/yay.git
 
-  git clone --depth=1 https://aur.archlinux.org/yay.git "$build_dir/yay"
-
-  pushd "$build_dir/yay" >/dev/null
+  cd yay
   makepkg -si --needed --noconfirm
-  popd >/dev/null
+  cd ..
+  rm -rf yay
 fi
 
 source_dir="${XDG_DATA_HOME:-$HOME/.local/share}/chezmoi"
@@ -150,6 +150,7 @@ if ! getent group docker | cut -d: -f4 | tr ',' '\n' | grep -qx "$USER"; then
   sudo usermod -aG docker "$USER"
   printf 'Added %s to the docker group; log out and back in before using Docker without sudo.\n' "$USER"
 fi
+
 
 # PipeWire is socket-activated; enabling its units makes it available before
 # the first desktop application requests audio.
