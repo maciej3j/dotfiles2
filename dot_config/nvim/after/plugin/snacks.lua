@@ -8,7 +8,7 @@ require("snacks").setup({
 	picker = { enabled = true, ui_select = true },
 	quickfile = { enabled = true },
 	scope = { enabled = true },
-	scroll = { enabled = true },
+	scroll = { enabled = false },
 	statuscolumn = { enabled = true },
 	words = { enabled = true },
 	icons = { enabled = true, style = "web-devicons" },

@@ -47,18 +47,18 @@
     "format-ethernet": "󰈀",
     "format-disconnected": "󰖪",
     "tooltip-format-wifi": "{essid}\n{ipaddr}",
-    "on-click": "foot -e $HOME/.local/bin/waybar-network"
+    "on-click": "foot --app-id=wlctl -e wlctl"
   },
   "bluetooth": {
     "format": "󰂯",
     "format-disabled": "󰂲",
     "format-connected": "󰂱 {num_connections}",
     "tooltip-format": "{controller_alias}\n{device_enumerate}",
-    "on-click": "foot -e $HOME/.local/bin/waybar-bluetooth"
+    "on-click": "foot --app-id=TUI.float -e bluetui"
   },
   "battery": {
     "states": {
-      "warning": 30,
+      "warning": 20,
       "critical": 15
     },
     "format": "{icon} {capacity}%",
@@ -70,9 +70,4 @@
     "icon-size": 16,
     "spacing": 8
   },
-  "custom/lock": {
-    "format": "",
-    "tooltip": false,
-    "on-click": "$HOME/.local/bin/waybar-power"
-  }
 }

@@ -16,9 +16,8 @@ sudo pacman -Syu --needed --noconfirm \
   adwaita-icon-theme \
   base-devel \
   bat \
-  bluez \
-  bluez-utils \
   brightnessctl \
+  bluetui \
   chezmoi \
   curl \
   docker \
@@ -29,8 +28,7 @@ sudo pacman -Syu --needed --noconfirm \
   fuzzel \
   fzf \
   firefox \
-  greetd \
-  greetd-tuigreet \
+  github-cli \
   git \
   go \
   grim \
@@ -43,26 +41,23 @@ sudo pacman -Syu --needed --noconfirm \
   mako \
   mesa \
   neovim \
-  networkmanager \
   nodejs \
   npm \
   noto-fonts \
   noto-fonts-cjk \
   noto-fonts-emoji \
+  opencode \
   pipewire \
   pipewire-pulse \
   playerctl \
   polkit \
   prettier \
   python \
-  python-pip \
   ruff \
   ripgrep \
-  rust-analyzer \
   rustup \
   slurp \
   stylua \
-  sudo \
   thunar \
   ttf-dejavu \
   ttf-jetbrains-mono-nerd \
@@ -74,33 +69,27 @@ sudo pacman -Syu --needed --noconfirm \
   waybar \
   wireplumber \
   wl-clipboard \
+  wlctl \
   xdg-desktop-portal-gtk \
   xdg-desktop-portal-hyprland \
   xorg-xwayland \
   yazi \
   zsh
 
-if ! rustup toolchain list | grep -q '^stable'; then
-  rustup default stable
-fi
+git config --global user.email "maciej.ko1444@gmail.com"
+git config --global user.name "Maciej Kowalski"
+
+rustup default stable
+rustup component add rust-analyzer rustfmt clippy
 
 if ! command -v yay >/dev/null 2>&1; then
-  build_dir=$(mktemp -d)
-  trap 'rm -rf "$build_dir"' EXIT
+    tmp_dir="$(mktemp -d)"
+    trap 'rm -rf "$tmp_dir"' EXIT
 
-  git clone --depth=1 https://aur.archlinux.org/yay.git "$build_dir/yay"
-
-  pushd "$build_dir/yay" >/dev/null
-  makepkg -si --needed --noconfirm
-  popd >/dev/null
+    git clone --depth=1 https://aur.archlinux.org/yay.git "$tmp_dir/yay"
+    makepkg -si --needed --noconfirm -D "$tmp_dir/yay"
 fi
 
-source_dir="${XDG_DATA_HOME:-$HOME/.local/share}/chezmoi"
-if [[ -d "$source_dir/.git" ]]; then
-  chezmoi update
-else
-  chezmoi init --apply maciej3j/dotfiles2
-fi
 
 if [[ ! -d "$HOME/.oh-my-zsh/.git" ]]; then
   git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh.git "$HOME/.oh-my-zsh"
@@ -137,23 +126,28 @@ clone_or_update \
   https://github.com/marlonrichert/zsh-autocomplete.git \
   "$zsh_custom/plugins/zsh-autocomplete"
 
+sudo systemctl enable --now docker.socket
+
+if ! id -nG "$USER" | grep -qw docker; then
+  sudo usermod -aG docker "$USER"
+fi
+
+if ! gh auth status >/dev/null 2>&1; then
+  gh auth login --git-protocol ssh
+fi
+
+source_dir="${XDG_DATA_HOME:-$HOME/.local/share}/chezmoi"
+if [[ -d "$source_dir/.git" ]]; then
+    git -C "$source_dir" remote set-url origin \
+        git@github.com:maciej3j/dotfiles2.git
+    chezmoi update
+else
+  chezmoi init --apply git@github.com:maciej3j/dotfiles2.git
+fi
+
 tpm_dir="$HOME/.tmux/plugins/tpm"
 if [[ ! -d "$tpm_dir/.git" ]]; then
   git clone --depth=1 https://github.com/tmux-plugins/tpm "$tpm_dir"
 fi
 
 "$tpm_dir/bin/install_plugins"
-
-sudo systemctl enable --now NetworkManager.service bluetooth.service docker.service
-
-if ! getent group docker | cut -d: -f4 | tr ',' '\n' | grep -qx "$USER"; then
-  sudo usermod -aG docker "$USER"
-  printf 'Added %s to the docker group; log out and back in before using Docker without sudo.\n' "$USER"
-fi
-
-# PipeWire is socket-activated; enabling its units makes it available before
-# the first desktop application requests audio.
-# if systemctl --user show-environment >/dev/null 2>&1; then
-#   systemctl --user enable --now pipewire.socket pipewire-pulse.socket wireplumber.service
-#   systemctl --user enable hyprpolkitagent.service
-# fi
