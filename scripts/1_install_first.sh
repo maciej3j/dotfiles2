@@ -47,6 +47,7 @@ sudo pacman -Syu --needed --noconfirm \
   noto-fonts-cjk \
   noto-fonts-emoji \
   opencode \
+  okular \
   pipewire \
   pipewire-pulse \
   playerctl \
