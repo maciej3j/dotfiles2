@@ -15,6 +15,7 @@ alias lg='lazygit'
 alias vim='nvim'
 alias cat='bat'
 alias ls='eza'
+alias dj='uv run python manage.py'
 
 export EDITOR=nvim
 export VISUAL=nvim
@@ -22,6 +23,41 @@ export VISUAL=nvim
 if command -v zoxide >/dev/null 2>&1; then
   eval "$(zoxide init zsh --cmd cd)"
 fi
+
+# Automatically activate project .venv.
+autoload -Uz add-zsh-hook
+
+typeset -g AUTO_VENV=""
+
+auto_venv() {
+  local dir="$PWD"
+  local venv=""
+
+  while [[ "$dir" != "/" ]]; do
+    if [[ -f "$dir/.venv/bin/activate" ]]; then
+      venv="$dir/.venv"
+      break
+    fi
+    dir="${dir:h}"
+  done
+
+  if [[ -n "$venv" && "$VIRTUAL_ENV" == "$venv" ]]; then
+    return
+  fi
+
+  if [[ -n "$AUTO_VENV" && "$VIRTUAL_ENV" == "$AUTO_VENV" ]]; then
+    deactivate 2>/dev/null
+    AUTO_VENV=""
+  fi
+
+  if [[ -n "$venv" ]]; then
+    source "$venv/bin/activate"
+    AUTO_VENV="$venv"
+  fi
+}
+
+add-zsh-hook chpwd auto_venv
+auto_venv
 
 if command -v tmux >/dev/null 2>&1 \
   && [[ -z "${TMUX:-}" ]] \
