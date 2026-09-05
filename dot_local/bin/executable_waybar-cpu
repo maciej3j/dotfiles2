@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+previous_total=0
+previous_idle=0
+
+while :; do
+    read -r _ user nice system idle iowait irq softirq steal _ < /proc/stat
+    total=$((user + nice + system + idle + iowait + irq + softirq + steal))
+    idle_total=$((idle + iowait))
+
+    if ((previous_total == 0)); then
+        usage=0
+    else
+        total_delta=$((total - previous_total))
+        idle_delta=$((idle_total - previous_idle))
+        usage=$(((total_delta - idle_delta) * 100 / total_delta))
+    fi
+
+    temperature=$(sensors 2>/dev/null | awk '
+        /Package id 0:|Tctl:|CPU Temp:|Core 0:/ {
+            for (i = 1; i <= NF; i++) {
+                if ($i ~ /^\+/) {
+                    gsub(/[^0-9.]/, "", $i)
+                    print $i
+                    exit
+                }
+            }
+        }
+    ')
+    temperature=${temperature:---}
+
+    class=""
+    if ((usage >= 90)); then
+        class="critical"
+    elif ((usage >= 75)); then
+        class="warning"
+    fi
+
+    printf '{"text":" %s%%","tooltip":"CPU: %s%%\\nTemperature: %s C","class":"%s"}\n' \
+        "$usage" "$usage" "$temperature" "$class"
+
+    previous_total=$total
+    previous_idle=$idle_total
+    sleep 2
+done

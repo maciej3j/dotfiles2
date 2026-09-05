@@ -1,0 +1,10 @@
+#!/bin/sh
+
+action=$(printf '%s\n' \
+    'power-saver' \
+    'balanced' \
+    'performance' | fuzzel --dmenu --prompt='Power mode > ')
+
+case "$action" in
+    power-saver|balanced|performance) exec powerprofilesctl set "$action" ;;
+esac

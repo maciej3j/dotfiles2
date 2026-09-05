@@ -37,7 +37,9 @@ sudo pacman -Syu --needed --noconfirm \
   hyprlock \
   hyprpolkitagent \
   hyprpaper \
+  htop \
   lazygit \
+  lm_sensors \
   mako \
   mesa \
   neovim \
@@ -50,11 +52,13 @@ sudo pacman -Syu --needed --noconfirm \
   okular \
   pipewire \
   pipewire-pulse \
+  power-profiles-daemon \
   playerctl \
   polkit \
   prettier \
   python \
   ruff \
+  sddm \
   ripgrep \
   rustup \
   slurp \
@@ -62,19 +66,21 @@ sudo pacman -Syu --needed --noconfirm \
   thunar \
   ttf-dejavu \
   ttf-jetbrains-mono-nerd \
-  tmux \
   qt5-wayland \
   qt6-wayland \
+  qt6-multimedia-ffmpeg \
+  qt6-svg \
+  qt6-virtualkeyboard \
   uwsm \
   uv \
   waybar \
   wireplumber \
   wl-clipboard \
-  wlctl \
   xdg-desktop-portal-gtk \
   xdg-desktop-portal-hyprland \
   xorg-xwayland \
   yazi \
+  zellij \
   zsh
 
 git config --global user.email "maciej.ko1444@gmail.com"
@@ -90,6 +96,23 @@ if ! command -v yay >/dev/null 2>&1; then
     git clone --depth=1 https://aur.archlinux.org/yay.git "$tmp_dir/yay"
     makepkg -si --needed --noconfirm -D "$tmp_dir/yay"
 fi
+
+yay -S --needed --noconfirm wlctl-bin
+
+theme_dir="/usr/share/sddm/themes/sddm-astronaut-theme"
+if [[ -d "$theme_dir/.git" ]]; then
+  sudo git -C "$theme_dir" pull --ff-only
+elif [[ ! -e "$theme_dir" ]]; then
+  sudo git clone --branch master --depth=1 \
+    https://github.com/Keyitdev/sddm-astronaut-theme.git "$theme_dir"
+else
+  printf 'SDDM theme directory exists but is not a Git repository: %s\n' "$theme_dir" >&2
+  exit 1
+fi
+
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+sudo install -Dm644 "$script_dir/sddm-theme.conf" /etc/sddm.conf.d/10-theme.conf
+sudo systemctl enable sddm.service
 
 
 if [[ ! -d "$HOME/.oh-my-zsh/.git" ]]; then
@@ -145,10 +168,3 @@ if [[ -d "$source_dir/.git" ]]; then
 else
   chezmoi init --apply git@github.com:maciej3j/dotfiles2.git
 fi
-
-tpm_dir="$HOME/.tmux/plugins/tpm"
-if [[ ! -d "$tpm_dir/.git" ]]; then
-  git clone --depth=1 https://github.com/tmux-plugins/tpm "$tpm_dir"
-fi
-
-"$tpm_dir/bin/install_plugins"

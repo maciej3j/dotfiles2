@@ -32,7 +32,6 @@ vim.pack.add({
 	"https://github.com/nyoom-engineering/oxocarbon.nvim",
 	"https://github.com/mcauley-penney/techbase.nvim",
 	"https://github.com/ray-x/lsp_signature.nvim",
-	"https://github.com/christoomey/vim-tmux-navigator",
 	"https://github.com/catppuccin/nvim",
 	"https://github.com/stevearc/conform.nvim",
 	"https://github.com/echasnovski/mini.nvim",
