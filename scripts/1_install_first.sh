@@ -97,7 +97,7 @@ if ! command -v yay >/dev/null 2>&1; then
     makepkg -si --needed --noconfirm -D "$tmp_dir/yay"
 fi
 
-yay -S --needed --noconfirm wlctl-bin
+yay -S --needed --noconfirm wlctl-bin omp-bin
 
 theme_dir="/usr/share/sddm/themes/sddm-astronaut-theme"
 if [[ -d "$theme_dir/.git" ]]; then
