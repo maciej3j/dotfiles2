@@ -1,0 +1,11 @@
+providers:
+  webSearchOrder:
+    []
+modelRoles:
+  default: openai-codex/gpt-5.6-luna
+symbolPreset: nerd
+composer:
+  shape: rail
+theme:
+  dark: dark-nebula
+setupVersion: 2

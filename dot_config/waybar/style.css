@@ -15,11 +15,9 @@ window#waybar {
 #window,
 #clock,
 #tray,
-#pulseaudio,
-#network,
-#bluetooth,
 #battery,
-#custom-lock {
+#bluetooth,
+#stats {
   background: rgba(30, 30, 46, 0.92);
   border-radius: 10px;
   padding: 0 12px;
@@ -62,6 +60,17 @@ window#waybar.empty #window {
   padding-right: 14px;
 }
 
+#stats {
+  padding: 0 4px;
+}
+
+#stats #network,
+#stats #custom-cpu,
+#stats #memory,
+#stats #pulseaudio {
+  padding: 0 8px;
+}
+
 #pulseaudio.muted,
 #network.disconnected,
 #bluetooth.disabled {
@@ -78,6 +87,14 @@ window#waybar.empty #window {
 
 #battery.charging {
   color: #a6e3a1;
+}
+
+#custom-cpu.warning {
+  color: #f9e2af;
+}
+
+#custom-cpu.critical {
+  color: #f38ba8;
 }
 
 tooltip {
