@@ -58,9 +58,4 @@ auto_venv() {
 
 add-zsh-hook chpwd auto_venv
 auto_venv
-
-if command -v zellij >/dev/null 2>&1 \
-  && [[ -z "${ZELLIJ:-}" ]] \
-  && [[ -z "${SSH_CONNECTION:-}" ]]; then
-  exec zellij attach --create main
-fi
+eval "$(zellij setup --generate-auto-start zsh)"
