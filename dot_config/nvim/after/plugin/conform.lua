@@ -1,13 +1,14 @@
 require("conform").setup({
 	formatters_by_ft = {
 		lua = { "stylua" },
-		python = { "ruff_format" },
+		python = { "black" },
 		rust = { "rustfmt" },
 		javascript = { "prettier" },
 		typescript = { "prettier" },
 		typescriptreact = { "prettier" },
 		javascriptreact = { "prettier" },
-		html = { "prettier" },
+		htmldjango = { "djlint" },
+		html = { "djlint" },
 		css = { "prettier" },
 		scss = { "prettier" },
 	},

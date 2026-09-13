@@ -9,6 +9,8 @@ require("which-key").add({
 	{ "<leader>t", group = "Przełączniki (Toggle)" },
 	{ "<leader>c", group = "Kod (LSP)" },
 	{ "<leader>x", group = "Trouble (Błędy)" },
+	{ "<leader>r", group = "Testy (Neotest)" },
+	{ "<leader>dj", group = "Django" },
 	{ "]", group = "Następny" },
 	{ "[", group = "Poprzedni" },
 })
