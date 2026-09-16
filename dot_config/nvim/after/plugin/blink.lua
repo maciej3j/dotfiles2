@@ -1,3 +1,13 @@
+local default_sources = { "lsp", "path", "snippets", "buffer" }
+local django_source = nil
+
+if pcall(require, "django") then
+	table.insert(default_sources, 2, "django")
+	django_source = {
+		django = { name = "Django", module = "django.completions.blink", async = true },
+	}
+end
+
 require("blink.cmp").setup({
 	fuzzy = { implementation = "prefer_rust" },
 	keymap = {
@@ -44,7 +54,10 @@ require("blink.cmp").setup({
 		menu = { auto_show = true },
 		documentation = { auto_show = true, auto_show_delay_ms = 0 },
 	},
-	sources = { default = { "lsp", "path", "snippets", "buffer" } },
+	sources = {
+		default = default_sources,
+		providers = django_source,
+	},
 	snippets = {
 		expand = function(snippet)
 			require("luasnip").lsp_expand(snippet)

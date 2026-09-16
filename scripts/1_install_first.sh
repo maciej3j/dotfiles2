@@ -19,6 +19,7 @@ sudo pacman -Syu --needed --noconfirm \
   brightnessctl \
   bluetui \
   chezmoi \
+  cliphist \
   curl \
   docker \
   docker-buildx \
@@ -38,8 +39,10 @@ sudo pacman -Syu --needed --noconfirm \
   hyprpolkitagent \
   hyprpaper \
   htop \
+  papirus-icon-theme \
   lazygit \
   lm_sensors \
+  libnotify \
   mako \
   mesa \
   neovim \
@@ -97,7 +100,7 @@ if ! command -v yay >/dev/null 2>&1; then
     makepkg -si --needed --noconfirm -D "$tmp_dir/yay"
 fi
 
-yay -S --needed --noconfirm wlctl-bin omp-bin
+yay -S --needed --noconfirm wlctl-bin catppuccin-gtk-theme-mocha
 
 theme_dir="/usr/share/sddm/themes/sddm-astronaut-theme"
 if [[ -d "$theme_dir/.git" ]]; then

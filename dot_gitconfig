@@ -1,0 +1,25 @@
+[user]
+	name = Maciej Kowalski
+	email = maciej.ko1444@gmail.com
+
+[init]
+	defaultBranch = main
+
+[push]
+	autoSetupRemote = true
+
+[color]
+	ui = auto
+
+[core]
+	editor = nvim
+	excludesfile = ~/.config/git/ignore
+
+[alias]
+	co = checkout
+	br = branch
+	st = status -sb
+	lg = log --oneline --graph --decorate
+	unstage = reset HEAD --
+	amend = commit --amend --no-edit
+	undo = reset --soft HEAD~1

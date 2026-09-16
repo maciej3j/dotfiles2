@@ -57,6 +57,28 @@ hl.animation({ leaf = "border", enabled = true, speed = 5, bezier = "swift" })
 hl.animation({ leaf = "fade", enabled = true, speed = 3, bezier = "smooth" })
 hl.animation({ leaf = "workspaces", enabled = true, speed = 3, bezier = "swift", style = "slide" })
 
+hl.window_rule({
+	name = "float-tui-tools",
+	match = { class = "^(bluetui|TUI.float)$" },
+	float = true,
+	center = true,
+})
+
+hl.window_rule({
+	name = "float-wlctl",
+	match = { class = "^wlctl$" },
+	float = true,
+	center = true,
+})
+
+hl.window_rule({
+	name = "float-pavucontrol",
+	match = { class = "^org.pulseaudio.pavucontrol$" },
+	float = true,
+	center = true,
+	dim_around = true,
+})
+
 hl.bind(main_mod .. " + Return", hl.dsp.exec_cmd(terminal))
 hl.bind(main_mod .. " + B", hl.dsp.exec_cmd("firefox"))
 hl.bind(main_mod .. " + D", hl.dsp.exec_cmd(menu))
@@ -93,18 +115,15 @@ end
 
 hl.bind("Print", hl.dsp.exec_cmd("sh -c 'grim - | wl-copy'"))
 hl.bind("SHIFT + Print", hl.dsp.exec_cmd("sh -c 'grim -g \"$(slurp)\" - | wl-copy'"))
-hl.bind(
-	main_mod .. " + S",
-	hl.dsp.exec_cmd(
-		'sh -c \'mkdir -p "$HOME/Pictures/Screenshots" && grim "$HOME/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png"\''
-	)
-)
-hl.bind(
-	main_mod .. " + SHIFT + S",
-	hl.dsp.exec_cmd(
-		'sh -c \'selection="$(slurp)" && mkdir -p "$HOME/Pictures/Screenshots" && grim -g "$selection" "$HOME/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png"\''
-	)
-)
+hl.bind(main_mod .. " + S", hl.dsp.exec_cmd(
+	'sh -c \'mkdir -p "$HOME/Pictures/Screenshots" && f="$HOME/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png" && grim "$f" && notify-send "Zrzut ekranu" "$f"\''
+))
+hl.bind(main_mod .. " + SHIFT + S", hl.dsp.exec_cmd(
+	'sh -c \'mkdir -p "$HOME/Pictures/Screenshots" && selection="$(slurp)" && f="$HOME/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png" && grim -g "$selection" "$f" && notify-send "Zrzut ekranu" "$f"\''
+))
+hl.bind(main_mod .. " + SHIFT + V", hl.dsp.exec_cmd(
+	"sh -c 'cliphist list | fuzzel --dmenu | cliphist decode | wl-copy'"
+))
 
 hl.bind(
 	"XF86AudioRaiseVolume",
@@ -128,4 +147,6 @@ hl.on("hyprland.start", function()
 	hl.exec_cmd("uwsm app -- mako")
 	hl.exec_cmd("uwsm app -- hyprpaper")
 	hl.exec_cmd("uwsm app -- hypridle")
+	hl.exec_cmd("uwsm app -- hyprpolkitagent")
+	hl.exec_cmd("wl-paste --watch cliphist store")
 end)
