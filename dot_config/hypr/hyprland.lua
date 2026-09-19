@@ -115,15 +115,22 @@ end
 
 hl.bind("Print", hl.dsp.exec_cmd("sh -c 'grim - | wl-copy'"))
 hl.bind("SHIFT + Print", hl.dsp.exec_cmd("sh -c 'grim -g \"$(slurp)\" - | wl-copy'"))
-hl.bind(main_mod .. " + S", hl.dsp.exec_cmd(
-	'sh -c \'mkdir -p "$HOME/Pictures/Screenshots" && f="$HOME/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png" && grim "$f" && notify-send "Zrzut ekranu" "$f"\''
-))
-hl.bind(main_mod .. " + SHIFT + S", hl.dsp.exec_cmd(
-	'sh -c \'mkdir -p "$HOME/Pictures/Screenshots" && selection="$(slurp)" && f="$HOME/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png" && grim -g "$selection" "$f" && notify-send "Zrzut ekranu" "$f"\''
-))
-hl.bind(main_mod .. " + SHIFT + V", hl.dsp.exec_cmd(
-	"sh -c 'cliphist list | fuzzel --dmenu | cliphist decode | wl-copy'"
-))
+hl.bind(
+	main_mod .. " + S",
+	hl.dsp.exec_cmd(
+		'sh -c \'mkdir -p "$HOME/Pictures/Screenshots" && f="$HOME/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png" && grim "$f" && notify-send "Zrzut ekranu" "$f"\''
+	)
+)
+hl.bind(
+	main_mod .. " + SHIFT + S",
+	hl.dsp.exec_cmd(
+		'sh -c \'mkdir -p "$HOME/Pictures/Screenshots" && selection="$(slurp)" && f="$HOME/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png" && grim -g "$selection" "$f" && notify-send "Zrzut ekranu" "$f"\''
+	)
+)
+hl.bind(
+	main_mod .. " + SHIFT + V",
+	hl.dsp.exec_cmd("sh -c 'cliphist list | fuzzel --dmenu | cliphist decode | wl-copy'")
+)
 
 hl.bind(
 	"XF86AudioRaiseVolume",
@@ -147,6 +154,5 @@ hl.on("hyprland.start", function()
 	hl.exec_cmd("uwsm app -- mako")
 	hl.exec_cmd("uwsm app -- hyprpaper")
 	hl.exec_cmd("uwsm app -- hypridle")
-	hl.exec_cmd("uwsm app -- hyprpolkitagent")
 	hl.exec_cmd("wl-paste --watch cliphist store")
 end)
