@@ -10,6 +10,9 @@ hl.monitor({
 })
 
 hl.config({
+	xwayland = {
+		force_zero_scaling = true,
+	},
 	input = {
 		kb_layout = "pl",
 		follow_mouse = 1,
@@ -20,8 +23,8 @@ hl.config({
 	},
 
 	general = {
-		gaps_in = 5,
-		gaps_out = 10,
+		gaps_in = 0,
+		gaps_out = 0,
 		border_size = 2,
 		layout = "dwindle",
 	},
