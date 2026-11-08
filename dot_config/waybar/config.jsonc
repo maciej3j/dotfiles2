@@ -1,6 +1,6 @@
 {
   "layer": "top",
-  "position": "top", // i3bar zazwyczaj znajduje się na górze lub na dole
+  "position": "bottom", // i3bar zazwyczaj znajduje się na górze lub na dole
   "height": 24,      // i3bar jest z reguły dość niski i kompaktowy
   "spacing": 0,      // zero odstępów między elementami dla spójnego wyglądu bloków
 
@@ -53,9 +53,11 @@
   },
 
   "network": {
-    "format-wifi": "NET: {essid} ({signalStrength}%)",
-    "format-ethernet": "NET: {ifname}",
-    "format-disconnected": "NET: DOWN"
+    "format-wifi": " {signalStrength}%",
+    "format-ethernet": "󰈀",
+    "format-disconnected": "󰖪",
+    "tooltip-format-wifi": "{essid}\n{ipaddr}",
+    "on-click": "foot --app-id=wlctl -e wlctl",
   },
 
   "battery": {
