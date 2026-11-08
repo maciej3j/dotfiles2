@@ -1,0 +1,45 @@
+# Hyprland session (official repos)
+# Required by dot_config/hypr/hyprland.lua, hypridle/hyprlock/hyprpaper, waybar, scripts
+hyprland
+waybar
+hyprlock
+hypridle
+hyprpaper
+hyprpolkitagent
+polkit
+uwsm
+xorg-xwayland
+xdg-desktop-portal
+xdg-desktop-portal-hyprland
+xdg-desktop-portal-gtk
+qt5-wayland
+qt6-wayland
+qt6-multimedia-ffmpeg
+
+# Launcher / notifications / lock / idle (as used by the config)
+fuzzel
+mako
+
+# Session utilities referenced in keybinds and scripts
+grim
+slurp
+wl-clipboard
+cliphist
+brightnessctl
+playerctl
+libnotify
+
+# Tray applets (network + bluetooth via nm-applet), BT TUI (bluetui) from waybar keybinds
+network-manager-applet
+libayatana-appindicator
+bluetui
+
+# Power / system services consumed by config and waybar scripts
+power-profiles-daemon
+upower
+udisks2
+
+# Audio GUI used by pavucontrol window rule in hyprland.lua
+adwaita-icon-theme
+papirus-icon-theme
+lm_sensors

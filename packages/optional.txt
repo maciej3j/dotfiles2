@@ -1,0 +1,7 @@
+# Optional packages - NOT installed automatically.
+# Run installer with --with-optional (or install manually) to enable these.
+
+# Docker stack (referenced by zsh plugins docker/docker-compose and nvim docker plugin)
+docker
+docker-buildx
+docker-compose

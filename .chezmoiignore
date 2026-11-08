@@ -1,3 +1,10 @@
 output.txt
 scripts/**
 executable_dot_local/**
+# Build/install/deploy tooling is not part of the dotfiles themselves.
+scripts/**
+install/**
+packages/**
+docs/**
+install.sh
+README.md

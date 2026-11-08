@@ -1,0 +1,19 @@
+# Desktop applications (official repos)
+# Terminal/editor/file manager already covered: foot (terminal.txt), neovim (development.txt)
+
+# Browser (keybind SUPER+B)
+firefox
+
+# File manager (keybind SUPER+E) + archive manager
+thunar
+thunar-archive-plugin
+file-roller
+
+# Document / image / video
+okular
+imv
+mpv
+
+# Audio tools (pavucontrol float rule, pulsemixer fallback in waybar-audio)
+pavucontrol
+pulsemixer

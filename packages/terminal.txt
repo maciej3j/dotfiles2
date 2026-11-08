@@ -1,0 +1,9 @@
+# Terminal tools (official repos)
+# foot is the terminal used by hyprland.lua and waybar on-click actions
+foot
+zellij
+bat
+eza
+htop
+yazi
+pkgfile
