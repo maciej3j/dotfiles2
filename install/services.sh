@@ -32,7 +32,7 @@ config_display_manager() {
     elif [[ -d $theme_dir/.git ]]; then
         git -C "$theme_dir" pull --ff-only || warn "Could not update sddm-astronaut-theme."
     elif [[ ! -e $theme_dir ]]; then
-        runsudo git clone --branch main --depth=1 \
+        runsudo git clone --branch master --depth=1 \
             https://github.com/Keyitdev/sddm-astronaut-theme.git -- "$theme_dir" \
             || fatal "Failed to clone sddm-astronaut-theme."
         ok "sddm-astronaut-theme cloned."
