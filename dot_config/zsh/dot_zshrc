@@ -14,7 +14,7 @@ setopt autocd appendhistory sharehistory extended_history hist_ignore_dups hist_
 alias lg='lazygit'
 alias vim='nvim'
 alias cat='bat'
-alias ls='eza --header --group-directories-first --icons'
+alias ls='eza --header --group-directories-first --icons=always'
 alias dj='uv run python manage.py'
 alias djrun='uv run python manage.py runserver_plus'
 alias djshell='uv run python manage.py shell_plus'

@@ -1,95 +1,55 @@
-{
-  "layer": "top",
-  "position": "top",
-  "height": 36,
-  "spacing": 6,
-  "margin-top": 0,
-  "margin-left": 0,
-  "margin-right": 0,
-  "modules-left": ["hyprland/workspaces"],
-  "modules-center": ["hyprland/window"],
-  "modules-right": ["tray", "group/stats", "language", "bluetooth", "battery", "clock"],
-  "hyprland/workspaces": {
-    "format": "{icon}",
-    "format-icons": {
-      "active": "●",
-      "default": "○",
-    },
+"hyprland/workspaces": {
+    "format": "{name}",
     "persistent-workspaces": {
-      "*": 5,
-    },
-  },
-  "hyprland/window": {
-    "format": "{}",
-    "max-length": 45,
-    "separate-outputs": true,
-  },
-  "clock": {
-    "format": "󰃭 {:%d.%m.%Y %H:%M}",
-    "format-alt": "{:%A, %d %B %Y}",
-    "tooltip-format": "<tt><small>{calendar}</small></tt>",
-    "calendar": {
-      "mode": "month",
-      "weeks-pos": "right",
-    },
-  },
-  "pulseaudio": {
-    "format": "{icon} {volume}%",
-    "format-muted": "󰝟",
-    "format-icons": {
-      "default": ["", "", ""],
-    },
-    "scroll-step": 5,
-    "on-click": "foot -e $HOME/.local/bin/waybar-audio",
-  },
-  "network": {
-    "format-wifi": "  {signalStrength}%",
-    "format-ethernet": "󰈀",
-    "format-disconnected": "󰖪",
-    "tooltip-format-wifi": "{essid}\n{ipaddr}",
-    "on-click": "foot --app-id=wlctl -e wlctl",
-  },
-  "bluetooth": {
-    "format": "󰂯",
-    "format-disabled": "󰂲",
-    "format-connected": "󰂱 {num_connections}",
-    "tooltip-format": "{controller_alias}\n{device_enumerate}",
-    "on-click": "foot --app-id=TUI.float -e bluetui",
-  },
-  "battery": {
-    "states": {
-      "warning": 20,
-      "critical": 15,
-    },
-    "format": "{icon} {capacity}%",
-    "format-charging": "󰂄 {capacity}%",
-    "format-plugged": " {capacity}%",
-    "format-icons": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
-    "on-click": "$HOME/.local/bin/waybar-power-profile",
-  },
-  "group/stats": {
-    "orientation": "inherit",
-    "modules": ["network#signal", "custom/cpu", "memory", "pulseaudio"],
-  },
-  "network#signal": {
-    "format-wifi": " {signalStrength}%",
-    "format-ethernet": "󰈀",
-    "format-disconnected": "󰖪",
-    "tooltip-format-wifi": "{essid}\n{ipaddr}",
-    "on-click": "foot --app-id=wlctl -e wlctl",
-  },
-  "custom/cpu": {
+        "*": 5
+    }
+},
+
+"hyprland/window": {
+    "format": "{title}",
+    "max-length": 50,
+    "separate-outputs": true
+},
+
+"network#signal": {
+    "format-wifi": "WIFI {signalStrength}%",
+    "format-ethernet": "ETH",
+    "format-disconnected": "NET DOWN"
+},
+
+"custom/cpu": {
     "exec": "$HOME/.local/bin/waybar-cpu",
     "return-type": "json",
-    "on-click": "foot -e htop",
-  },
-  "memory": {
+    "on-click": "foot -e htop"
+},
+
+"memory": {
     "interval": 2,
-    "format": "󰍛 {percentage}%",
-    "tooltip-format": "RAM: {used:0.1f} GiB / {total:0.1f} GiB",
-  },
-  "tray": {
-    "icon-size": 16,
-    "spacing": 8,
-  },
+    "format": "RAM {percentage}%",
+    "tooltip-format": "{used:0.1f} GiB / {total:0.1f} GiB"
+},
+
+"pulseaudio": {
+    "format": "VOL {volume}%",
+    "format-muted": "VOL MUTED"
+},
+
+"battery": {
+    "format": "BAT {capacity}%",
+    "format-charging": "BAT CHG {capacity}%",
+    "format-plugged": "BAT AC {capacity}%"
+},
+
+"bluetooth": {
+    "format": "BT",
+    "format-disabled": "BT OFF",
+    "format-connected": "BT {num_connections}"
+},
+
+"language": {
+    "format": "LANG {}"
+},
+
+"clock": {
+    "format": "%d.%m.%Y %H:%M"
 }
