@@ -1,111 +1,69 @@
-```css
 * {
-    font-family: "monospace";
-    font-size: 12px;
-    font-weight: normal;
-    border: none;
-    border-radius: 0;
-    min-height: 0;
+  font-family: "DejaVu Sans Mono", "JetBrains Mono", monospace;
+  font-size: 13px;
+  border-radius: 0px; /* Całkowity brak zaokrągleń dla stylu i3 */
+  margin: 0;
+  padding: 0;
+  min-height: 0;
 }
 
+/* Główne okno paska */
 window#waybar {
-    background: #000000;
-    color: #ffffff;
+  background-color: #1d2021; /* Ciemne tło (styl Gruvbox / i3) */
+  color: #ebdbb2;
+  border-bottom: 1px solid #3c3836;
 }
 
-/* Workspaces */
-#workspaces {
-    margin: 0;
-    padding: 0;
-}
-
+/* Pulpity / Workspaces */
 #workspaces button {
-    background: #333333;
-    color: #ffffff;
-    padding: 0 8px;
-    margin: 0;
-    border: 1px solid #ffffff;
-    border-radius: 0;
-    box-shadow: none;
+  padding: 0 10px;
+  background-color: transparent;
+  color: #a89984;
+  border: none;
+  border-bottom: 2px solid transparent;
 }
 
+/* Pulpit, na którym aktualnie się znajdujesz */
 #workspaces button.active {
-    background: #285577;
-    color: #ffffff;
+  background-color: #3c3836;
+  color: #fabd2f; /* Klasyczny i3-żółty/pomarańczowy akcent */
+  border-bottom: 2px solid #fabd2f;
 }
 
+/* Pulpit z otwartymi oknami, ale nieaktywny */
+#workspaces button.persistent,
+#workspaces button.visible {
+  color: #ebdbb2;
+}
+
+/* Pulpit wymagający uwagi (np. powiadomienie) */
 #workspaces button.urgent {
-    background: #900000;
-    color: #ffffff;
+  background-color: #fb4934;
+  color: #282828;
 }
 
-#workspaces button:hover {
-    background: #484848;
-    box-shadow: none;
-}
-
-/* Window title */
+/* Tytuł aktywnego okna na środku */
 #window {
-    background: transparent;
-    color: #ffffff;
-    padding: 0 8px;
+  color: #b8bb26;
+  padding: 0 10px;
 }
 
-window#waybar.empty #window {
-    background: transparent;
-}
-
-/* Status modules */
-#tray,
-#stats,
-#language,
-#bluetooth,
+/* Moduły po prawej stronie - bloki i3 */
+#clock,
+#pulseaudio,
+#network,
+#cpu,
+#memory,
 #battery,
+#tray {
+  padding: 0 12px;
+  background-color: #282828;
+  color: #ebdbb2;
+  border-left: 1px solid #3c3836; /* Separator bloków */
+}
+
+/* Opcjonalne wyróżnienie zegara na samym końcu */
 #clock {
-    background: transparent;
-    color: #ffffff;
-    padding: 0 5px;
-    margin: 0;
+  background-color: #3c3836;
+  color: #fabd2f;
 }
-
-#stats {
-    padding: 0;
-}
-
-#stats #network,
-#stats #custom-cpu,
-#stats #memory,
-#stats #pulseaudio {
-    padding: 0 5px;
-    color: #ffffff;
-}
-
-/* States */
-#battery.warning,
-#custom-cpu.warning {
-    color: #ffff00;
-}
-
-#battery.critical,
-#custom-cpu.critical {
-    color: #ff0000;
-}
-
-#battery.charging {
-    color: #00ff00;
-}
-
-#bluetooth.disabled,
-#pulseaudio.muted,
-#network.disconnected {
-    color: #888888;
-}
-
-/* Tooltips */
-tooltip {
-    background: #000000;
-    color: #ffffff;
-    border: 1px solid #ffffff;
-    border-radius: 0;
-}
-```
