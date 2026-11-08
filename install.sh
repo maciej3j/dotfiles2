@@ -22,46 +22,8 @@ set -euo pipefail
 #------------------------------------------------------------------------------
 # Globals (filled by option parsing)
 #------------------------------------------------------------------------------
-GPU_MODE="auto"        # auto | amd | intel | nvidia | all | skip
-WITH_OPTIONAL=0
-SDDM_MODE="auto"      # yes | no | auto
-DO_UPGRADE=1
-DOTS_ONLY=0
-
 SCRIPT_PATH="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/$(basename -- "${BASH_SOURCE[0]}")"
 REPO_ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-
-usage() { printf '%s\n' "$1"; exit "$2"; }
-
-parse_args() {
-    local arg
-    while (($#)); do
-        arg="$1"; shift
-        case $arg in
-            --gpu=*)        GPU_MODE="${arg#--gpu=}" ;;
-            --skip-gpu)     GPU_MODE="skip" ;;
-            --with-optional) WITH_OPTIONAL=1 ;;
-            --sddm)         SDDM_MODE="yes" ;;
-            --no-sddm)      SDDM_MODE="no" ;;
-            --skip-upgrade) DO_UPGRADE=0 ;;
-            --dots-only)    DOTS_ONLY=1 ;;
-            --yes)          SUPPRESS_PROMPTS=1 ;;
-            --dry-run)      DRY_RUN=1 ;;
-            --log)          LOG_FILE="${1:?--log needs a value}"; shift ;;
-            --help|-h)      usage "Usage: ./install.sh [options] - see header of install.sh" 0 ;;
-            *) usage "Unknown option: $arg\nRun ./install.sh --help for usage." 1 ;;
-        esac
-    done
-    case $GPU_MODE in
-        auto|amd|intel|nvidia|all|skip) ;;
-        *) usage "Invalid --gpu value: $GPU_MODE" 1 ;;
-    esac
-    # --yes has explicit SDDM behaviour: unless --no-sddm was given, SDDM is
-    # installed and enabled so a non-interactive run still yields a graphical session.
-    if ((SUPPRESS_PROMPTS)) && [[ $SDDM_MODE == auto ]]; then
-        SDDM_MODE="yes"
-    fi
-}
 
 #------------------------------------------------------------------------------
 # Library
@@ -76,90 +38,9 @@ source "$REPO_ROOT/install/verify.sh"
 GPU_DIR="$REPO_ROOT/install/hardware"
 
 #------------------------------------------------------------------------------
-# GPU step
-#------------------------------------------------------------------------------
-install_gpus() {
-    [[ $GPU_MODE != skip ]] || { log "Skipping GPU driver setup (--skip-gpu)."; return 0; }
-    step "GPU detection / driver setup"
-    source "$GPU_DIR/detect.sh"
-    have lspci || fatal "lspci missing; install pciutils or rerun with --skip-gpu."
-    local -a detected
-    mapfile -t detected < <(detect_gpus)
-
-    local -a selected=()
-    if [[ $GPU_MODE == auto ]]; then
-        if ((${#detected[@]} == 1)); then
-            selected=("${detected[@]}")
-            log "Detected GPU vendor: ${detected[0]}"
-        elif ((${#detected[@]} > 1)); then
-            warn "Multiple GPUs detected: ${detected[*]} (hybrid graphics)."
-            log "GPU drivers for each detected vendor can be installed together."
-            if confirm "Install drivers for ALL detected GPUs (${detected[*]})?"; then
-                selected=("${detected[@]}")
-            else
-                selected=($(ask_gpu_choice "${detected[@]}"))
-            fi
-        else
-            warn "No GPU detected via lspci."
-            if ((SUPPRESS_PROMPTS)) || ! [[ -t 0 ]]; then
-                log "Continuing without GPU driver installation. Rerun with --gpu=amd|intel|nvidia to force one."
-                return 0
-            fi
-            selected=($(ask_gpu_choice amd intel nvidia))
-        fi
-    else
-        selected=(${GPU_MODE//,/ })
-    fi
-
-    local vendor
-    for vendor in "${selected[@]}"; do
-        case $vendor in
-            amd)    source "$GPU_DIR/amd.sh";   install_gpu_amd ;;
-            intel)  source "$GPU_DIR/intel.sh";  install_gpu_intel ;;
-            nvidia) source "$GPU_DIR/nvidia.sh"; install_gpu_nvidia ;;
-            all)    source "$GPU_DIR/amd.sh"; install_gpu_amd
-                    source "$GPU_DIR/intel.sh"; install_gpu_intel
-                    source "$GPU_DIR/nvidia.sh"; install_gpu_nvidia ;;
-            *) warn "Unknown GPU kind: $vendor (skipped)" ;;
-        esac
-    done
-}
-
-ask_gpu_choice() {
-    #$@ = options to choose from; echoes the chosen vendor
-    if ! [[ -t 0 ]]; then
-        printf '%s\n' $1 # first option as fallback
-        return 0
-    fi
-    local i choice options=("$@")
-    printf 'Available GPU kinds:\n'
-    for i in "${!options[@]}"; do
-        printf '  %d) %s\n' $((i + 1)) "${options[$i]}"
-    done
-    local reply=""
-    printf 'Select GPU vendor [1-%d] (comma-separated for hybrid): ' "${#options[@]}"
-    read -r reply
-    [[ -n $reply ]] || reply="1"
-    local out="" n
-    local -a picks
-    mapfile -t picks < <(printf '%s\n' ${reply//,/ }) # shellcheck disable=SC2206,SC2086
-    for n in "${picks[@]}"; do
-        if [[ $n =~ ^[0-9]+$ ]] && ((n >= 1 && n <= ${#options[@]})); then
-            out+=" ${options[$((n - 1))]}"
-        fi
-    done
-    [[ -n ${out// } ]] || out=" $1"
-    printf '%s\n' "${out// / }"
-}
-
-#------------------------------------------------------------------------------
 # Main flow
 #------------------------------------------------------------------------------
 main() {
-    parse_args "$@"
-
-    # Log everything (start at fresh log each run).
-    : >"$LOG_FILE" 2>/dev/null || true
     step "dotfiles2 installer starting (log: $LOG_FILE)"
     log "Working directory: $REPO_ROOT"
 
