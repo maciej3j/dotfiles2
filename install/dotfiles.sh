@@ -18,6 +18,29 @@ chezmoi_source_dir() {
     printf '%s\n' "${XDG_DATA_HOME:-$HOME/.local/share}/chezmoi"
 }
 
+# Applies dotfiles from the CURRENT checkout (no network needed).
+_chezmoi_apply_local() {
+    ((DRY_RUN)) && { log "[dry-run] chezmoi apply --source $DOTFILES_ROOT"; return 0; }
+    if [[ -t 0 ]] && ! ((SUPPRESS_PROMPTS)); then
+        chezmoi apply --interactive --source "$DOTFILES_ROOT"
+    else
+        chezmoi apply --source "$DOTFILES_ROOT"
+    fi
+}
+
+# Deploy from the local checkout only; does not need network or sudo.
+deploy_dotfiles_local() {
+    require_chezmoi
+    step "Deploying dotfiles via chezmoi (local checkout)"
+    if _chezmoi_apply_local; then
+        ok "dotfiles deployed."
+        return 0
+    fi
+    err "chezmoi apply failed - dotfiles were NOT fully deployed."
+    return 1
+}
+
+# Full deploy (fresh install path): wire up ~/.local/share/chezmoi, then apply.
 deploy_dotfiles() {
     require_chezmoi
 
@@ -32,13 +55,13 @@ deploy_dotfiles() {
             ok "Existing chezmoi source matches this repository ($origin)."
             if ((DRY_RUN)); then
                 log "[dry-run] chezmoi update"
-            else
-                chezmoi update || warn "chezmoi update failed; falling back to apply."
+            elif ! chezmoi update; then
+                warn "chezmoi update failed; falling back to apply from the local checkout."
             fi
         else
             warn "Existing chezmoi source points to a different repository: ${origin:-<unknown>}"
             if confirm "Apply dotfiles from the current checkout ($DOTFILES_ROOT) instead?"; then
-                _apply_local_source
+                : # proceed to local apply below
             else
                 log "Keeping existing chezmoi source. Deploy skipped."
                 return 0
@@ -48,40 +71,16 @@ deploy_dotfiles() {
         # Fresh system: initialize chezmoi from the canonical repo URL.
         if ((DRY_RUN)); then
             log "[dry-run] chezmoi init --apply $REPO_URL_HTTPS"
-            return 0
-        fi
-        if ! chezmoi init --apply "$REPO_URL_HTTPS"; then
-            # Upstream clone may fail (no network to github or repo private);
-            # fall back to this checkout.
+        elif ! chezmoi init --apply "$REPO_URL_HTTPS"; then
+            # Upstream clone may fail (offline, repo moved); fall back locally.
             warn "chezmoi init from network failed; applying local checkout instead."
-            _apply_local_source
         fi
     fi
 
-    # --interactive only prompts when something would actually change, so a
-    # fresh system results in zero prompts and an existing system is asked
-    # file-by-file instead of being overwritten blindly.
-    if ((DRY_RUN)); then
-        log "[dry-run] chezmoi apply (interactive on conflict only)"
+    if _chezmoi_apply_local; then
+        ok "dotfiles deployed."
         return 0
     fi
-    if [[ -t 0 ]] && ! ((SUPPRESS_PROMPTS)); then
-        chezmoi apply --interactive --source "$DOTFILES_ROOT" || true
-    else
-        chezmoi apply --source "$DOTFILES_ROOT" || warn "chezmoi apply reported an error."
-    fi
-    ok "dotfiles deployed."
-}
-
-_apply_local_source() {
-    have chezmoi || return 1
-    if ((DRY_RUN)); then
-        log "[dry-run] chezmoi apply --source $DOTFILES_ROOT"
-        return 0
-    fi
-    if [[ -t 0 ]] && ! ((SUPPRESS_PROMPTS)); then
-        chezmoi apply --interactive --source "$DOTFILES_ROOT" || warn "chezmoi apply (local source) reported errors."
-    else
-        chezmoi apply --source "$DOTFILES_ROOT" || warn "chezmoi apply (local source) reported errors."
-    fi
+    err "chezmoi apply failed - dotfiles were NOT fully deployed."
+    return 1
 }

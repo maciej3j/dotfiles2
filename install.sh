@@ -9,7 +9,10 @@
 #   --sddm | --no-sddm                force enable / skip the SDDM display manager
 #   --skip-upgrade                    do not run pacman -Syu first
 #   --dots-only                       skip package installation; only deploy dotfiles
-#   --yes                             assume yes for all prompts (non-interactive)
+#                                     (no sudo, no network - local checkout only)
+#   --yes                             assume yes for all prompts (non-interactive).
+#                                     NOTE: --yes also means SDDM WILL be installed
+#                                     and enabled, unless --no-sddm is given.
 #   --dry-run                         print actions without executing them
 #   --log FILE                        custom log file
 #   --help                            this text
@@ -53,6 +56,11 @@ parse_args() {
         auto|amd|intel|nvidia|all|skip) ;;
         *) usage "Invalid --gpu value: $GPU_MODE" 1 ;;
     esac
+    # --yes has explicit SDDM behaviour: unless --no-sddm was given, SDDM is
+    # installed and enabled so a non-interactive run still yields a graphical session.
+    if ((SUPPRESS_PROMPTS)) && [[ $SDDM_MODE == auto ]]; then
+        SDDM_MODE="yes"
+    fi
 }
 
 #------------------------------------------------------------------------------
@@ -158,19 +166,22 @@ main() {
     require_arch
     require_not_root
     require_pacman
-    require_network
+    if ((DOTS_ONLY)); then
+        log "--dots-only: skipping network and sudo checks (local checkout only)."
+    else
+        require_network
+    fi
     if ((DRY_RUN)); then
         warn "DRY RUN mode: nothing will be executed, only printed."
     fi
 
-    if ! ((DRY_RUN)); then
+    if ! ((DRY_RUN)) && ! ((DOTS_ONLY)); then
         sudo -v || fatal "sudo is required for pacman/services operations."
-    else
-        log "DRY RUN: skipping sudo validation."
     fi
 
     if ((DOTS_ONLY)); then
         step "--dots-only: skipping package installation"
+        deploy_dotfiles_local || fatal "Dotfiles deployment failed."
     else
         if ((DO_UPGRADE)); then
             upgrade_system
@@ -182,14 +193,14 @@ main() {
         install_gpus
         install_services
         setup_laptop
+        deploy_dotfiles || fatal "Dotfiles deployment failed."
     fi
-    deploy_dotfiles
 
     step "Verification"
-    if run_verify; then
-        :
-    else
-        warn "Verification reported problems - review the report above."
+    if ! run_verify; then
+        warn "Verification found critical problems - see the MISSING/FAIL entries above."
+        log "Installation finished with problems; exit code non-zero."
+        exit 1
     fi
 
     log ""

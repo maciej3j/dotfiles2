@@ -84,7 +84,7 @@ Pakiety dostępne w oficjalnych repozytoriach są **pomijane** (nie instaluje si
 - Wykrywanie: `lspci` (`install/hardware/detect.sh`), kategorie VGA/3D/Display.
 - AMD: `mesa`, `vulkan-radeon`, `libva-mesa-driver`, `mesa-vdpau`, `vulkan-mesa-layers`.
 - Intel: `mesa`, `vulkan-intel`, `intel-media-driver`, `libva-intel-driver` (starsze iGPU).
-- NVIDIA: dobór pakietu pod aktualny kernel (`nvidia`, `nvidia-lts`, `nvidia-dkms`) + pytanie o moduły open (Turing i nowsze) vs proprietary; zawsze `nvidia-utils`.
+- NVIDIA: dobór pakietu pod aktualny kernel (`nvidia`, `nvidia-lts`, `nvidia-dkms`, `nvidia-open`) — wariant wykrywany przez analizę PCI device id (moduły open wspierają oficjalnie Turing 0x1Exx i nowsze; starsze karty zawsze dostają moduły proprietary), z fallbackiem na DKMS, gdy pakiet nie jest dostępny; przy DKMS instalowane są pasujące nagłówki kernela (np. `linux-lts-headers`); zawsze `nvidia-utils`.
 - Hybrydowe GPU: instalator pyta, czy zainstalować sterowniki dla obu vendorów.
 - Bootloader / `mkinitcpio` / parametry kernela **nie są** modyfikowane automatycznie.
 
@@ -92,7 +92,7 @@ Pakiety dostępne w oficjalnych repozytoriach są **pomijane** (nie instaluje si
 
 - NetworkManager — `systemctl enable --now` (systemowy).
 - bluetooth — `systemctl enable --now` (systemowy).
-- pkgfile — timer `pkgfile-update.timer` (patchle nagłówka `command-not-found`).
+- pkgfile — timer `pkgfile-update.timer` (obsługa wtyczki `command-not-found`).
 - SDDM — opcjonalnie (pytanie), motyw sddm-astronaut-theme.
 - PipeWire / pipewire-pulse / WirePlumber — usługi **user** (`systemctl --user`), bez sudo.
 - UPower / UDisks2 / portale — D-Bus activated, nie wymagają `systemctl enable`.

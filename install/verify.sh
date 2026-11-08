@@ -107,30 +107,41 @@ verify_fonts() {
 
 verify_gpu() {
     step "GPU drivers"
-    local -a vendors=(nvidia amd intel)
     if ! have lspci; then
         verify_warn "lspci unavailable; cannot detect GPU"
         return 0
     fi
     source "$DOTFILES_ROOT/install/hardware/detect.sh" 2>/dev/null || true
-    local gpu_vendor
-    gpu_vendor="$(detect_gpus | head -1 || true)"
-    verify_ok "Detected GPU vendor: ${gpu_vendor:-unknown}"
-    case $gpu_vendor in
-        amd)   verify_check_packages mesa vulkan-radeon libva-mesa-driver ;;
-        intel) verify_check_packages mesa vulkan-intel intel-media-driver ;;
-        nvidia)
-            verify_check_packages nvidia-utils
-            if pacman -Qqi nvidia >/dev/null 2>&1 || pacman -Qqi nvidia-open >/dev/null 2>&1 \
-               || pacman -Qqi nvidia-lts >/dev/null 2>&1 || pacman -Qqi nvidia-dkms >/dev/null 2>&1
-            then
-                verify_ok "NVIDIA kernel driver package installed"
-            else
-                verify_warn "NVIDIA kernel driver package not detected"
-            fi
-            ;;
-        *) verify_warn "No known GPU vendor detected" ;;
-    esac
+    local -a gpus
+    mapfile -t gpus < <(detect_gpus 2>/dev/null)
+    if ((${#gpus[@]} == 0)); then
+        verify_warn "No known GPU vendor detected"
+        return 0
+    fi
+    # Check every detected card (hybrid laptops may carry two vendors).
+    local vendor
+    for vendor in "${gpus[@]}"; do
+        verify_ok "Detected GPU vendor: $vendor"
+        case $vendor in
+            amd)
+                verify_check_packages mesa vulkan-radeon libva-mesa-driver
+                ;;
+            intel)
+                verify_check_packages mesa vulkan-intel intel-media-driver
+                ;;
+            nvidia)
+                verify_check_packages nvidia-utils
+                if pacman -Qqi nvidia >/dev/null 2>&1 || pacman -Qqi nvidia-open >/dev/null 2>&1 \
+                   || pacman -Qqi nvidia-lts >/dev/null 2>&1 || pacman -Qqi nvidia-dkms >/dev/null 2>&1 \
+                   || pacman -Qqi nvidia-open-dkms >/dev/null 2>&1
+                then
+                    verify_ok "NVIDIA kernel driver package installed"
+                else
+                    verify_warn "NVIDIA kernel driver package not detected"
+                fi
+                ;;
+        esac
+    done
 }
 
 verify_check_packages() {

@@ -39,7 +39,12 @@ ok() {
 }
 
 warn() {
-    if [[ -t 1 ]]; then printf '\033[33m[WARN]\033[0m %s\n' "$*"; else log "[WARN] $*"; fi
+    # Warnings go to stderr so they never pollute $(...) command substitutions.
+    if [[ -t 1 ]]; then
+        printf '\033[33m[WARN]\033[0m %s\n' "$*" >&2
+    else
+        printf '[WARN] %s\n' "$*" >&2
+    fi
     _log_write "[WARN] $*"
 }
 
@@ -182,15 +187,15 @@ read_package_list() {
 
 # ---------------------------------------------------------- system update
 upgrade_system() {
-    step "Updating system (pacman -Syu)"
+    step "Updating system (sudo pacman -Syu)"
     if ((DRY_RUN)); then
         log "[dry-run] sudo pacman -Syu --needed --noconfirm"
         return 0
     fi
-    pacman -Sy >/dev/null
     if ! runsudo pacman -Syu --needed --noconfirm; then
-        warn "System update failed. Continue anyway."
+        fatal "System update (pacman -Syu) failed. Resolve the issue (keys, mirrors, disk) and re-run ./install.sh"
     fi
+    ok "System is up to date."
 }
 
 install_official() {

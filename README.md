@@ -48,8 +48,8 @@ cd dotfiles2
 | `--with-optional` | doinstaluj też `packages/optional.txt` (Docker itd.) |
 | `--sddm` / `--no-sddm` | wymuś instalację / pominięcie menedżera wyświetlania SDDM |
 | `--skip-upgrade` | pomiń wstępne `pacman -Syu` |
-| `--dots-only` | tylko wdrożenie dotfiles (bez pakietów i usług) |
-| `--yes` | przyjmij "tak" we wszystkich pytaniach |
+| `--dots-only` | tylko wdrożenie dotfiles z lokalnego checkoutu (bez sudo i internetu) |
+| `--yes` | przyjmij "tak" we wszystkich pytaniach; SDDM zostanie wtedy zainstalowany i włączony (chyba że podano `--no-sddm`) |
 | `--dry-run` | pokaż planowane operacje bez ich wykonywania |
 | `--log FILE` | zapisz log do wskazanego pliku |
 

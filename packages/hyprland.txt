@@ -33,6 +33,13 @@ libnotify
 network-manager-applet
 libayatana-appindicator
 bluetui
+bluez
+bluez-utils
+
+# Audio stack (used by wpctl keybinds, pulsemixer and waybar audio module)
+pipewire
+pipewire-pulse
+wireplumber
 
 # Power / system services consumed by config and waybar scripts
 power-profiles-daemon
