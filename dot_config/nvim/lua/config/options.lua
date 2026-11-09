@@ -20,6 +20,7 @@ vim.opt.showmode = false
 vim.opt.pumheight = 10
 vim.opt.pumblend = 10
 vim.opt.synmaxcol = 300
+vim.opt.guicursor = "n-v-i-c:block-Cursor"
 vim.opt.fillchars = { eob = " " }
 vim.opt.undofile = true
 vim.opt.updatetime = 300
