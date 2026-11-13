@@ -1,0 +1,7 @@
+# Fonts (official repos)
+noto-fonts
+noto-fonts-emoji
+noto-fonts-cjk
+ttf-jetbrains-mono-nerd
+ttf-dejavu
+otf-font-awesome

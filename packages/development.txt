@@ -1,0 +1,16 @@
+# Development tools (official repos)
+neovim
+python
+python-pip
+python-virtualenv
+nodejs
+npm
+go
+rustup
+uv
+ruff
+stylua
+prettier
+python-black
+lazygit
+github-cli

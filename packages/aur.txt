@@ -1,0 +1,5 @@
+# AUR packages (installed via yay)
+# wlctl-bin    - TUI used by waybar network module and hyprland window rule
+# catppuccin-gtk-theme-mocha - GTK theme referenced by gtk-3.0/gtk-4.0 settings.ini
+wlctl-bin
+catppuccin-gtk-theme-mocha

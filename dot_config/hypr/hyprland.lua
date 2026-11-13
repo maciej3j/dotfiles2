@@ -20,8 +20,8 @@ hl.config({
 	},
 
 	general = {
-		gaps_in = 5,
-		gaps_out = 10,
+		gaps_in = 0,
+		gaps_out = 0,
 		border_size = 2,
 		layout = "dwindle",
 	},
@@ -157,5 +157,7 @@ hl.on("hyprland.start", function()
 	hl.exec_cmd("uwsm app -- mako")
 	hl.exec_cmd("uwsm app -- hyprpaper")
 	hl.exec_cmd("uwsm app -- hypridle")
+	hl.exec_cmd("uwsm app -- /usr/lib/hyprpolkitagent")
+	hl.exec_cmd("uwsm app -- nm-applet")
 	hl.exec_cmd("wl-paste --watch cliphist store")
 end)

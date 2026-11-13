@@ -1,109 +1,69 @@
 * {
-  border: none;
-  border-radius: 0;
-  font-family: "JetBrainsMono Nerd Font";
+  font-family: "DejaVu Sans Mono", "JetBrains Mono", monospace;
   font-size: 13px;
+  border-radius: 0px; /* Całkowity brak zaokrągleń dla stylu i3 */
+  margin: 0;
+  padding: 0;
   min-height: 0;
 }
 
+/* Główne okno paska */
 window#waybar {
-  background: transparent;
-  color: #cdd6f4;
+  background-color: #1d2021; /* Ciemne tło (styl Gruvbox / i3) */
+  color: #ebdbb2;
+  border-bottom: 1px solid #3c3836;
 }
 
-#workspaces,
-#window,
-#clock,
-#tray,
-#battery,
-#bluetooth,
-#stats {
-  background: rgba(30, 30, 46, 0.92);
-  border-radius: 10px;
-  padding: 0 12px;
-  margin: 0 2px;
-  min-height: 30px;
-}
-
-#workspaces {
-  padding: 0 6px;
-}
-
+/* Pulpity / Workspaces */
 #workspaces button {
-  color: #6c7086;
-  background: transparent;
-  padding: 0 6px;
-  margin: 0;
-  border-radius: 8px;
+  padding: 0 10px;
+  background-color: transparent;
+  color: #a89984;
+  border: none;
+  border-bottom: 2px solid transparent;
 }
 
+/* Pulpit, na którym aktualnie się znajdujesz */
 #workspaces button.active {
-  color: #cdd6f4;
+  background-color: #3c3836;
+  color: #fabd2f; /* Klasyczny i3-żółty/pomarańczowy akcent */
+  border-bottom: 2px solid #fabd2f;
 }
 
-#workspaces button:hover {
-  color: #89b4fa;
-  background: rgba(137, 180, 250, 0.12);
+/* Pulpit z otwartymi oknami, ale nieaktywny */
+#workspaces button.persistent,
+#workspaces button.visible {
+  color: #ebdbb2;
 }
 
+/* Pulpit wymagający uwagi (np. powiadomienie) */
+#workspaces button.urgent {
+  background-color: #fb4934;
+  color: #282828;
+}
+
+/* Tytuł aktywnego okna na środku */
 #window {
-  color: #a6adc8;
+  color: #b8bb26;
+  padding: 0 10px;
 }
 
-window#waybar.empty #window {
-  background: transparent;
+/* Moduły po prawej stronie - bloki i3 */
+#clock,
+#pulseaudio,
+#network,
+#cpu,
+#memory,
+#battery,
+#tray {
+  padding: 0 12px;
+  background-color: #282828;
+  color: #ebdbb2;
+  border-left: 1px solid #3c3836; /* Separator bloków */
 }
 
+/* Opcjonalne wyróżnienie zegara na samym końcu */
 #clock {
-  font-weight: 600;
-  padding-left: 14px;
-  padding-right: 14px;
-}
-
-#stats {
-  padding: 0 4px;
-}
-
-#stats #network,
-#stats #custom-cpu,
-#stats #memory,
-#stats #pulseaudio {
-  padding: 0 8px;
-}
-
-#pulseaudio.muted,
-#network.disconnected,
-#bluetooth.disabled {
-  color: #6c7086;
-}
-
-#battery.warning {
-  color: #f9e2af;
-}
-
-#battery.critical {
-  color: #f38ba8;
-}
-
-#battery.charging {
-  color: #a6e3a1;
-}
-
-#custom-cpu.warning {
-  color: #f9e2af;
-}
-
-#custom-cpu.critical {
-  color: #f38ba8;
-}
-
-tooltip {
-  background: #1e1e2e;
-  color: #cdd6f4;
-  border: 1px solid #45475a;
-  border-radius: 10px;
-}
-
-tooltip label {
-  padding: 6px;
+  background-color: #3c3836;
+  color: #fabd2f;
 }
